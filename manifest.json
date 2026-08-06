@@ -1,0 +1,20 @@
+{
+  "name": "تقویم پسماند و بازیافت ویندزور",
+  "short_name": "پسماند ویندزور",
+  "description": "برنامه هوشمند زمان‌بندی جمع‌آوری زباله و بازیافت شهر ویندزور به زبان فارسی",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%2310b981'/><path fill='%23ffffff' d='M256 96c-48.5 0-92 21.2-121.7 54.9L96 112v96h96l-37.5-37.5C179.3 144.1 214.8 128 256 128c62.6 0 115 44.4 125.7 104h32.7C403.1 161.4 336.5 96 256 96zm144 208v-96h-96l37.5 37.5C332.7 367.9 297.2 384 256 384c-62.6 0-115-44.4-125.7-104H97.6C108.9 350.6 175.5 416 256 416c48.5 0 92-21.2 121.7-54.9L400 400z'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

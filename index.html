@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>تقویم جمع‌آوری پسماند و بازیافت ویندزور | Windsor Waste & Recycling Calendar</title>
+    <meta name="description" content="برنامه تعاملی و هوشمند زمان‌بندی جمع‌آوری زباله، پسماند تر، بازیافت و ضایعات باغچه شهر ویندزور به زبان فارسی بر اساس مناطق رسمی ۱A تا ۴B">
+    
+    <!-- Mobile PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="پسماند ویندزور">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%2310b981'/><path fill='%23ffffff' d='M256 96c-48.5 0-92 21.2-121.7 54.9L96 112v96h96l-37.5-37.5C179.3 144.1 214.8 128 256 128c62.6 0 115 44.4 125.7 104h32.7C403.1 161.4 336.5 96 256 96zm144 208v-96h-96l37.5 37.5C332.7 367.9 297.2 384 256 384c-62.6 0-115-44.4-125.7-104H97.6C108.9 350.6 175.5 416 256 416c48.5 0 92-21.2 121.7-54.9L400 400z'/></svg>">
+
+    <!-- Google Fonts: Vazirmatn -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Stylesheet with Cache Busting -->
+    <link rel="stylesheet" href="style.css?v=8">
+</head>
+<body>
+    <!-- Background Animated Shapes -->
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+
+    <!-- PWA Install Prompt Banner (Mobile Only) -->
+    <div id="pwa-install-banner" class="pwa-banner hidden">
+        <div class="pwa-banner-content">
+            <div class="pwa-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="pwa-text">
+                <strong>نصب اپلیکیشن روی گوشی (PWA)</strong>
+                <span>برای دریافت یادآورهای خودکار و دسترسی بدون اینترنت نصب کنید.</span>
+            </div>
+        </div>
+        <div class="pwa-actions">
+            <button id="pwa-install-btn" class="action-btn primary"><i class="fa-solid fa-download"></i> نصب برنامه</button>
+            <button id="pwa-close-btn" class="icon-btn-sm"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Top Navbar -->
+        <header class="main-header">
+            <div class="brand-container">
+                <div class="logo-badge">
+                    <i class="fa-solid fa-recycle"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>تقویم بازیافت و پسماند ویندزور</h1>
+                    <p class="subtitle">سامانه رسمی زمان‌بندی پسماند شهر ویندزور (City of Windsor & EWSWA)</p>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <!-- Postal Code Search Input & Zone Picker -->
+                <div class="control-group postal-search-group">
+                    <div class="postal-input-box">
+                        <i class="fa-solid fa-magnifying-glass-location"></i>
+                        <input type="text" id="postal-input" placeholder="کد پستی (مثلاً N8W, N9A, N8P...)" maxlength="7" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <select id="zone-select" class="zone-dropdown">
+                        <option value="1A">منطقه 1A (دوشنبه - غرب ویندزور / N9B, N9C, N9J)</option>
+                        <option value="1B">منطقه 1B (دوشنبه - جنوب غرب / N9E)</option>
+                        <option value="2A">منطقه 2A (سه‌شنبه - مرکز شهر / N9A, N8X North)</option>
+                        <option value="2B">منطقه 2B (سه‌شنبه - جنوب مرکز / N8X South, N9G)</option>
+                        <option value="3A">منطقه 3A (چهارشنبه - شرق مرکز / N8S West, N8Y)</option>
+                        <option value="3B" selected>منطقه 3B (پنج‌شنبه - جنوب شرق / N8W, N0R, N8V)</option>
+                        <option value="4A">منطقه 4A (پنج‌شنبه - ریورساید / N8P, N8S East)</option>
+                        <option value="4B">منطقه 4B (جمعه - فورست گلید / N8R, N8T, N8N)</option>
+                    </select>
+                </div>
+
+                <!-- Dark/Light Theme Switcher -->
+                <button id="theme-toggle" class="icon-btn" title="تغییر پوسته (تاریک / روشن)">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Next Pickup Countdown Card (Hero Section) -->
+            <section class="hero-pickup-card">
+                <div class="hero-header">
+                    <div class="status-indicator">
+                        <span class="pulse-dot"></span>
+                        <span id="current-today-date">تاریخ امروز</span>
+                    </div>
+                    <button class="reminder-btn" id="notify-btn">
+                        <i class="fa-regular fa-bell"></i> فعال‌سازی یادآور گوشی
+                    </button>
+                </div>
+
+                <div class="hero-body">
+                    <div class="pickup-highlight">
+                        <span class="highlight-tag" id="zone-info-tag">منطقه انتخابی: 3B (پنج‌شنبه‌ها)</span>
+                        <h2 id="next-pickup-title">محاسبه نوبت بعدی...</h2>
+                        <div class="pickup-items-badges" id="next-pickup-badges">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <div class="pickup-rules-quick">
+                        <div class="rule-item">
+                            <i class="fa-solid fa-clock"></i>
+                            <div>
+                                <strong>دوره جمع‌آوری رسمی ویندزور:</strong>
+                                <span>ارگانیک: هفتگی | زباله و بازیافت: هر ۲ هفته | ضایعات باغچه: ماهانه</span>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <i class="fa-solid fa-box-tissue"></i>
+                            <div>
+                                <strong>ساعت قرار دادن کنار خیابان:</strong>
+                                <span>حداکثر تا ساعت ۶:۰۰ صبح روز جمع‌آوری</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation Tabs for Calendar & Sorting Wizard (Desktop) -->
+            <div class="nav-tabs-container">
+                <div class="nav-tabs" role="tablist">
+                    <button class="tab-btn active" data-tab="calendar-tab">
+                        <i class="fa-regular fa-calendar-days"></i> تقویم ماهانه
+                    </button>
+                    <button class="tab-btn" data-tab="list-tab">
+                        <i class="fa-solid fa-list-check"></i> نوبت‌های پیش‌رو
+                    </button>
+                    <button class="tab-btn" data-tab="wizard-tab">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> راهنمای تفکیک
+                    </button>
+                    <button class="tab-btn" data-tab="rules-tab">
+                        <i class="fa-solid fa-circle-info"></i> قوانین و کدپستی
+                    </button>
+                </div>
+                
+                <div class="tab-actions">
+                    <button id="download-ics-btn" class="action-btn secondary" title="دانلود تقویم برای تقویم گوگل و آیفون">
+                        <i class="fa-solid fa-download"></i> خروجی (ICS)
+                    </button>
+                    <button id="print-calendar-btn" class="action-btn secondary" title="چاپ تقویم">
+                        <i class="fa-solid fa-print"></i> چاپ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 1: Interactive Calendar -->
+            <div id="calendar-tab" class="tab-content active">
+                <div class="calendar-wrapper">
+                    <!-- Calendar Toolbar -->
+                    <div class="calendar-toolbar">
+                        <div class="month-nav">
+                            <button id="prev-month-btn" class="nav-arrow-btn">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                            <h2 id="calendar-month-title">عنوان ماه</h2>
+                            <button id="next-month-btn" class="nav-arrow-btn">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button id="today-btn" class="today-chip">امروز</button>
+                        </div>
+
+                        <!-- Collection Legend -->
+                        <div class="legend-container">
+                            <span class="legend-title">راهنما:</span>
+                            <div class="legend-items">
+                                <div class="legend-item"><span class="legend-color garbage"></span> زباله (هر ۲ هفته)</div>
+                                <div class="legend-item"><span class="legend-color blue-box"></span> ظروف (هر ۲ هفته)</div>
+                                <div class="legend-item"><span class="legend-color red-box"></span> کاغذ (هر ۲ هفته)</div>
+                                <div class="legend-item"><span class="legend-color green-bin"></span> ارگانیک (هفتگی)</div>
+                                <div class="legend-item"><span class="legend-color yard-waste"></span> باغچه (ماهانه)</div>
+                                <div class="legend-item"><span class="legend-color bulk-item"></span> حجیم</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Grid -->
+                    <div class="calendar-grid-container">
+                        <div class="weekdays-header">
+                            <div>شنبه</div>
+                            <div>یک‌شنبه</div>
+                            <div>دو‌شنبه</div>
+                            <div>سه‌شنبه</div>
+                            <div>چهارشنبه</div>
+                            <div>پنج‌شنبه</div>
+                            <div>جمعه</div>
+                        </div>
+                        <div id="calendar-days-grid" class="days-grid">
+                            <!-- Generated dynamically via app.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Upcoming List View -->
+            <div id="list-tab" class="tab-content">
+                <div class="upcoming-list-container">
+                    <div class="list-header">
+                        <h3><i class="fa-solid fa-clock-rotate-left"></i> برنامه جمع‌آوری ۳۰ روز آینده</h3>
+                        <p>لیست مرتب‌شده نوبت‌های تخلیه برای منطقه انتخابی شما بر اساس جدول رسمی شهرداری ویندزور</p>
+                    </div>
+                    <div id="upcoming-list-items" class="upcoming-cards-grid">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Waste Sorting Wizard -->
+            <div id="wizard-tab" class="tab-content">
+                <div class="wizard-container">
+                    <div class="wizard-search-box">
+                        <div class="search-title">
+                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> زباله‌یاب و راهنمای تفکیک</h3>
+                            <p>اسم وسیله یا زباله‌ای که می‌خواهید دور بیندازید را بنویسید تا بگوییم سطل مربوط به آن کدام است:</p>
+                        </div>
+                        
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="wizard-search-input" placeholder="مثلاً: قوطی کنسرو، بطری شیر، یخچالی، برگه کاغذ، روغن خوراکی..." autocomplete="off">
+                            <button id="clear-search-btn" class="clear-search hidden"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+
+                        <!-- Filter Chips -->
+                        <div class="wizard-filter-chips">
+                            <button class="chip active" data-category="all">همه مواد</button>
+                            <button class="chip" data-category="blue-box">جعبه آبی (ظروف)</button>
+                            <button class="chip" data-category="red-box">جعبه قرمز (کاغذ)</button>
+                            <button class="chip" data-category="green-bin">پسماند ارگانیک</button>
+                            <button class="chip" data-category="yard-waste">ضایعات باغچه</button>
+                            <button class="chip" data-category="depot">مراکز تحویل / ویژه</button>
+                        </div>
+                    </div>
+
+                    <!-- Search Results Grid -->
+                    <div id="wizard-results-grid" class="wizard-results-grid">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: City Rules & Guidelines -->
+            <div id="rules-tab" class="tab-content">
+                <div class="rules-container">
+                    <!-- Windsor Official Postal Code Map Table -->
+                    <div class="rule-card" style="grid-column: 1/-1;">
+                        <h4><i class="fa-solid fa-map-location-dot" style="color: var(--accent-emerald);"></i> جدول کد پستی و مناطق جمع‌آوری شهرداری ویندزور</h4>
+                        <div style="overflow-x: auto; margin-top: 10px;">
+                            <table class="postal-table" style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                                <thead>
+                                    <tr style="background: var(--bg-surface); border-bottom: 2px solid var(--border-color); text-align: right;">
+                                        <th style="padding: 8px 12px;">کد پستی (Postal Code)</th>
+                                        <th style="padding: 8px 12px;">محدوده منطقه</th>
+                                        <th style="padding: 8px 12px;">کد منطقه</th>
+                                        <th style="padding: 8px 12px;">روز جمع‌آوری</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N9B, N9C, N9J</strong></td>
+                                        <td style="padding: 8px 12px;">غرب ویندزور / دانشگاه / Sandwich</td>
+                                        <td style="padding: 8px 12px;"><span class="badge blue-box">1A</span></td>
+                                        <td style="padding: 8px 12px;">دوشنبه‌ها</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N9E</strong></td>
+                                        <td style="padding: 8px 12px;">جنوب غرب ویندزور</td>
+                                        <td style="padding: 8px 12px;"><span class="badge blue-box">1B</span></td>
+                                        <td style="padding: 8px 12px;">دوشنبه‌ها</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N9A, N8X (North Tecumseh)</strong></td>
+                                        <td style="padding: 8px 12px;">مرکز شهر ویندزور (Downtown)</td>
+                                        <td style="padding: 8px 12px;"><span class="badge red-box">2A</span></td>
+                                        <td style="padding: 8px 12px;">سه‌شنبه‌ها</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N8X (South Tecumseh), N9G</strong></td>
+                                        <td style="padding: 8px 12px;">جنوب مرکز ویندزور / Southwood</td>
+                                        <td style="padding: 8px 12px;"><span class="badge red-box">2B</span></td>
+                                        <td style="padding: 8px 12px;">سه‌شنبه‌ها</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N8S (West Jefferson), N8Y</strong></td>
+                                        <td style="padding: 8px 12px;">شرق مرکز / Ford City / Riverside West</td>
+                                        <td style="padding: 8px 12px;"><span class="badge green-bin">3A</span></td>
+                                        <td style="padding: 8px 12px;">چهارشنبه‌ها</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N8W, N0R, N8V</strong></td>
+                                        <td style="padding: 8px 12px;">جنوب شرق / Airport / Walker Rd</td>
+                                        <td style="padding: 8px 12px;"><span class="badge green-bin">3B</span></td>
+                                        <td style="padding: 8px 12px;">پنج‌شنبه‌ها</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N8P, N8S (East Jefferson)</strong></td>
+                                        <td style="padding: 8px 12px;">ریورساید شرق / Banwell / Tecumseh border</td>
+                                        <td style="padding: 8px 12px;"><span class="badge yard-waste">4A</span></td>
+                                        <td style="padding: 8px 12px;">پنج‌شنبه‌ها</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 8px 12px;"><strong>N8R, N8T, N8N</strong></td>
+                                        <td style="padding: 8px 12px;">فورست گلید / Forest Glade East</td>
+                                        <td style="padding: 8px 12px;"><span class="badge yard-waste">4B</span></td>
+                                        <td style="padding: 8px 12px;">جمعه‌ها</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <div class="card-icon emerald"><i class="fa-solid fa-leaf"></i></div>
+                            <h4>پسماند ارگانیک و تر (Green Bin) - هفتگی</h4>
+                            <ul>
+                                <li>جمع‌آوری <strong>هفتگی</strong> در تمام طول سال.</li>
+                                <li>باقیمانده غذا، استخوان، پوست میوه، دستمال کاغذی کثیف و چای کیسه‌ای.</li>
+                                <li>فقط کیسه‌های تجزیه‌پذیر (Compostable) یا کاغذ روزنامه استفاده کنید.</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="card-icon blue"><i class="fa-solid fa-dumpster"></i></div>
+                            <h4>زباله عمومی و بازیافت - هر ۲ هفته یک‌بار</h4>
+                            <ul>
+                                <li><strong>زباله عمومی:</strong> هر دو هفته یک‌بار (حداکثر ۲ کیسه یا سطل).</li>
+                                <li><strong>جعبه آبی و قرمز:</strong> هر دو هفته یک‌بار (نوبتی متناوب).</li>
+                                <li>سطل‌ها باید حداکثر تا <strong>ساعت ۶:۰۰ صبح</strong> روز جمع‌آوری بگذارید.</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="card-icon green"><i class="fa-solid fa-tree"></i></div>
+                            <h4>ضایعات باغچه (Yard Waste) - ماهانه</h4>
+                            <ul>
+                                <li>جمع‌آوری <strong>ماهانه یک‌بار</strong> در هفته مشخص شده.</li>
+                                <li>برگ درختان و چمن فقط در کیسه‌های کاغذی قهوه‌ای قرار گیرد.</li>
+                                <li>شاخه‌ها در طول حداکثر ۱ متر بسته‌بندی شوند.</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="card-icon purple"><i class="fa-solid fa-couch"></i></div>
+                            <h4>ضایعات حجیم و وسایل برقی (Bulk Items)</h4>
+                            <ul>
+                                <li>برای جمع‌آوری یخچال، مبلمان و وسایل بزرگ با شماره <strong>۳۱۱</strong> تماس بگیرید.</li>
+                                <li>وسایل الکترونیکی را می‌توانید مجانی به EWSWA Depot ببرید.</li>
+                                <li>نشانی: 3560 North Service Rd East, Windsor</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Windsor Contact Banner -->
+                    <div class="windsor-contact-box">
+                        <div class="contact-info">
+                            <h3><i class="fa-solid fa-phone"></i> مرکز ارتباطات شهر ویندزور (City of Windsor 311)</h3>
+                            <p>برای گزارش عدم جمع‌آوری، درخواست سطل جدید یا رزرو جمع‌آوری وسایل حجیم:</p>
+                            <div class="phone-tags">
+                                <span class="phone-tag"><i class="fa-solid fa-square-phone"></i> شماره داخلی: 311</span>
+                                <span class="phone-tag"><i class="fa-solid fa-phone-flip"></i> شماره مستقیم: 3121-974-519-1+</span>
+                                <span class="phone-tag"><i class="fa-solid fa-globe"></i> وبسایت رسمی: citywindsor.ca</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>تقویم غیررسمی پسماند ویندزور به زبان فارسی | بر اساس داده‌های رسمی شهرداری ویندزور (citywindsor.ca) و EWSWA</p>
+            <p class="copyright">طراحی شده با فونت وزیرمتن (Vazirmatn) | 2026 Windsor Recycle Calendar</p>
+        </footer>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+        <button class="nav-item active" data-tab="calendar-tab">
+            <i class="fa-regular fa-calendar-days"></i>
+            <span>تقویم</span>
+        </button>
+        <button class="nav-item" data-tab="list-tab">
+            <i class="fa-solid fa-list-check"></i>
+            <span>نوبت‌ها</span>
+        </button>
+        <button class="nav-item" data-tab="wizard-tab">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>زباله‌یاب</span>
+        </button>
+        <button class="nav-item" data-tab="rules-tab">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>قوانین</span>
+        </button>
+    </nav>
+
+    <!-- Day Details Modal -->
+    <div id="day-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <button id="close-modal-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <span class="modal-badge" id="modal-date-shamsi">تاریخ انتخاب شده</span>
+                <h3 id="modal-date-gregorian">Selected Date</h3>
+            </div>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Dynamic Content via JS -->
+            </div>
+            <div class="modal-footer">
+                <button id="modal-reminder-btn" class="action-btn primary">
+                    <i class="fa-regular fa-bell"></i> تنظیم یادآور این روز
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast hidden">
+        <i class="fa-solid fa-circle-check toast-icon"></i>
+        <span id="toast-message">پیام سیستم</span>
+    </div>
+
+    <!-- JavaScript Files with Cache Busting -->
+    <script src="app.js?v=8"></script>
+</body>
+</html>
