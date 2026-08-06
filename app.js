@@ -1,6 +1,10 @@
 /**
  * WINDSOR FA WASTE & RECYCLING CALENDAR - APPLICATION ENGINE
- * Official City of Windsor Schedule (Zones 1A to 4B) & Postal Code Search Engine
+ * Official City of Windsor Schedule (4 Official Collection Types)
+ * 1. Recycling Collection (Single-stream Blue Cart)
+ * 2. Garbage Collection
+ * 3. Green Bin Collection (Weekly)
+ * 4. Yard Waste Collection (Paper Bags)
  */
 
 // ==========================================
@@ -46,14 +50,14 @@ function toPersianDigits(str) {
     return str.toString().replace(/\d/g, x => pDigits[x]);
 }
 
-// Official City of Windsor Collection Zones (1A to 4B PDF Schedules)
+// Official City of Windsor Collection Zones (1A to 4B)
 const ZONE_SCHEDULES = {
     "1A": { name: "منطقه 1A (دوشنبه‌ها - غرب ویندزور / N9B, N9C, N9J)", collectionDay: 1, isCycleA: true },
     "1B": { name: "منطقه 1B (دوشنبه‌ها - جنوب غرب / N9E)", collectionDay: 1, isCycleA: false },
     "2A": { name: "منطقه 2A (سه‌شنبه‌ها - مرکز شهر / N9A, N8X)", collectionDay: 2, isCycleA: true },
     "2B": { name: "منطقه 2B (سه‌شنبه‌ها - جنوب مرکز / N8X, N9G)", collectionDay: 2, isCycleA: false },
     "3A": { name: "منطقه 3A (چهارشنبه‌ها - شرق مرکز / N8S, N8Y)", collectionDay: 3, isCycleA: true },
-    "3B": { name: "منطقه 3B (پنج‌شنبه‌ها - جنوب شرق / N8W, N0R, N8V)", collectionDay: 4, isCycleA: false }, // Thursday (Verified Official PDF 3B)
+    "3B": { name: "منطقه 3B (پنج‌شنبه‌ها - جنوب شرق / N8W, N0R, N8V)", collectionDay: 4, isCycleA: false },
     "4A": { name: "منطقه 4A (پنج‌شنبه‌ها - ریورساید / N8P, N8S East)", collectionDay: 4, isCycleA: true },
     "4B": { name: "منطقه 4B (جمعه‌ها - فورست گلید / N8R, N8T, N8N)", collectionDay: 5, isCycleA: false }
 };
@@ -70,32 +74,30 @@ const POSTAL_TO_ZONE_MAP = {
     "N8R": "4B", "N8T": "4B", "N8N": "4B"
 };
 
-// Official Windsor Waste Types & Frequencies
+// The 4 Official Windsor Waste Collection Types (Matching City Legend)
 const WASTE_TYPES = {
-    garbage: { id: "garbage", name: "زباله عمومی (هر ۲ هفته)", icon: "fa-trash-can", colorClass: "garbage", desc: "جمع‌آوری هر دو هفته یک‌بار (سطل مشکی یا کیسه)" },
-    blueBox: { id: "blue-box", name: "بازیافت ظروف (Blue - هر ۲ هفته)", icon: "fa-wine-bottle", colorClass: "blue-box", desc: "قوطی، بطری پلاستیکی و شیشه‌ای (هر دو هفته یک‌بار)" },
-    redBox: { id: "red-box", name: "بازیافت کاغذ (Red - هر ۲ هفته)", icon: "fa-newspaper", colorClass: "red-box", desc: "کارتن پهن‌شده، روزنامه و مقوا (هر دو هفته یک‌بار)" },
-    greenBin: { id: "green-bin", name: "پسماند ارگانیک (Green - هفتگی)", icon: "fa-apple-whole", colorClass: "green-bin", desc: "جمع‌آوری هفتگی در تمام طول سال" },
-    yardWaste: { id: "yard-waste", name: "ضایعات باغچه (ماهانه)", icon: "fa-leaf", colorClass: "yard-waste", desc: "جمع‌آوری ماهانه یک‌بار" },
-    bulkItem: { id: "bulk-item", name: "ضایعات حجیم", icon: "fa-couch", colorClass: "bulk-item", desc: "نیاز به هماهنگی قبلی با ۳۱۱" }
+    recycling: { id: "recycling", name: "بازیافت (Recycling - هر ۲ هفته)", icon: "fa-recycle", colorClass: "blue-box", desc: "سطل آبی یکپارچه: کاغذ، مقوا، ظروف فلزی و پلاستیکی" },
+    garbage: { id: "garbage", name: "زباله عمومی (Garbage - هر ۲ هفته)", icon: "fa-trash-can", colorClass: "garbage", desc: "زباله خانگی غیرقابل بازیافت در سطل دردار" },
+    greenBin: { id: "green-bin", name: "پسماند ارگانیک (Green Bin - هفتگی)", icon: "fa-leaf", colorClass: "green-bin", desc: "باقیمانده غذا و پسماند تر در سطل سبز" },
+    yardWaste: { id: "yard-waste", name: "ضایعات باغچه (Yard Waste - ماهانه)", icon: "fa-box-archive", colorClass: "yard-waste", desc: "برگ و شاخه‌ها فقط در کیسه کاغذی قهوه‌ای" }
 };
 
 // Database for Waste Wizard (زباله‌یاب)
 const WASTE_ITEMS_DB = [
-    { name: "قوطی کنسرو فلزی و آلومینیومی", category: "blue-box", binName: "جعبه آبی (هر ۲ هفته)", tip: "حتماً داخل قوطی را آبکشی کنید و درب آن را جدا کنید." },
-    { name: "بطری پلاستیکی آب و نوشابه", category: "blue-box", binName: "جعبه آبی (هر ۲ هفته)", tip: "درب پلاستیکی را باز کنید و بطری را فشار دهید تا کم‌حجم شود." },
-    { name: "شیشه مربا و سس", category: "blue-box", binName: "جعبه آبی (هر ۲ هفته)", tip: "شیشه را شسته و بدون درب فلزی در جعبه آبی بگذارید." },
-    { name: "ظرف شوینده و مایع ظرفشویی", category: "blue-box", binName: "جعبه آبی (هر ۲ هفته)", tip: "کاملاً خالی و شسته شود. کد بازیافت ۱ تا ۷ مجاز است." },
-    { name: "روزنامه، مجله و کاغذ باطله", category: "red-box", binName: "جعبه قرمز (هر ۲ هفته)", tip: "کاغذها را تمیز و خشک در جعبه قرمز قرار دهید." },
-    { name: "کارتن پیتزا (بدون چربی زیاد)", category: "red-box", binName: "جعبه قرمز (هر ۲ هفته)", tip: "اگر قسمت زیرین خیلی چرب است آن را بکنید و دور بیندازید." },
-    { name: "جعبه غلات، کفش و مقوا", category: "red-box", binName: "جعبه قرمز (هر ۲ هفته)", tip: "جعبه‌ها را باز کرده و کاملاً تخت کنید." },
-    { name: "باقیمانده غذا و استخوان", category: "green-bin", binName: "سطل ارگانیک (هفتگی)", tip: "می‌توانید در کیسه‌های تجزیه‌پذیر مخصوص (Compostable) بگذارید." },
-    { name: "پوست میوه و سبزیجات", category: "green-bin", binName: "سطل ارگانیک (هفتگی)", tip: "پوست مرکبات، هسته میوه و ضایعات سبزیجات مجاز است." },
-    { name: "دستمال کاغذی و حوله کاغذی کثیف", category: "green-bin", binName: "سطل ارگانیک (هفتگی)", tip: "دستمال‌های آغشته به مواد غذایی مجاز هستند." },
-    { name: "چای کیسه‌ای و تفاله قهوه", category: "green-bin", binName: "سطل ارگانیک (هفتگی)", tip: "فیلتر کاغذی قهوه و کیسه چای را مستقیم در سطل تر بریزید." },
-    { name: "برگ درختان و چمن زده شده", category: "yard-waste", binName: "کیسه کاغذی (ماهانه)", tip: "جمع‌آوری ماهانه یک‌بار؛ فقط در کیسه‌های کاغذی قهوه‌ای قرار گیرد." },
+    { name: "قوطی کنسرو فلزی و آلومینیومی", category: "recycling", binName: "سطل بازیافت آبی (هر ۲ هفته)", tip: "داخل قوطی را آبکشی کنید. تمام مواد بازیافتی در یک سطل قرار می‌گیرند." },
+    { name: "بطری پلاستیکی آب و نوشابه", category: "recycling", binName: "سطل بازیافت آبی (هر ۲ هفته)", tip: "درب پلاستیکی را باز کنید و بطری را فشار دهید." },
+    { name: "شیشه مربا و سس", category: "recycling", binName: "سطل بازیافت آبی (هر ۲ هفته)", tip: "شیشه را شسته و بدون درب در سطل آبی قرار دهید." },
+    { name: "ظرف شوینده و مایع ظرفشویی", category: "recycling", binName: "سطل بازیافت آبی (هر ۲ هفته)", tip: "کاملاً خالی و شسته شود." },
+    { name: "روزنامه، مجله و کاغذ باطله", category: "recycling", binName: "سطل بازیافت آبی (هر ۲ هفته)", tip: "کاغذ و مقوا مستقیم همراه سایر مواد بازیافتی در سطل آبی ریخته می‌شوند." },
+    { name: "کارتن پیتزا (بدون چربی زیاد)", category: "recycling", binName: "سطل بازیافت آبی (هر ۲ هفته)", tip: "قسمت‌های تمیز کارتن را تخت کرده و در سطل آبی قرار دهید." },
+    { name: "جعبه غلات، کفش و مقوا", category: "recycling", binName: "سطل بازیافت آبی (هر ۲ هفته)", tip: "جعبه‌ها را تخت کنید." },
+    { name: "باقیمانده غذا و استخوان", category: "green-bin", binName: "سطل ارگانیک سبز (هفتگی)", tip: "می‌توانید در کیسه‌های تجزیه‌پذیر مخصوص (Compostable) بگذارید." },
+    { name: "پوست میوه و سبزیجات", category: "green-bin", binName: "سطل ارگانیک سبز (هفتگی)", tip: "پوست مرکبات، هسته میوه و ضایعات سبزیجات مجاز است." },
+    { name: "دستمال کاغذی و حوله کاغذی کثیف", category: "green-bin", binName: "سطل ارگانیک سبز (هفتگی)", tip: "دستمال‌های آغشته به مواد غذایی مجاز هستند." },
+    { name: "چای کیسه‌ای و تفاله قهوه", category: "green-bin", binName: "سطل ارگانیک سبز (هفتگی)", tip: "فیلتر کاغذی قهوه و کیسه چای را مستقیم در سطل سبز بریزید." },
+    { name: "برگ درختان و چمن زده شده", category: "yard-waste", binName: "کیسه کاغذی قهوه‌ای (ماهانه)", tip: "جمع‌آوری ماهانه یک‌بار؛ فقط در کیسه‌های کاغذی قهوه‌ای قرار گیرد." },
     { name: "شاخه درختان (نازک)", category: "yard-waste", binName: "ضایعات باغچه (ماهانه)", tip: "شاخه‌ها را در طول حداکثر ۱ متر با طناب نخی ببندید." },
-    { name: "یخچال، فریزر و کولر گازی", category: "depot", binName: "تحویل به مرکز EWSWA / تماس ۳۱۱", tip: "به دلیل گاز مبرد نیاز به ثبت در سامانه ۳۱۱ یا تحویل شخصی دارد." },
+    { name: "یخچال، فریزر و کولر گازی", category: "depot", binName: "تحویل به مرکز EWSWA Depot / تماس ۳۱۱", tip: "به دلیل گاز مبرد نیاز به ثبت در سامانه ۳۱۱ یا تحویل شخصی دارد." },
     { name: "باتری، قلمی و باتری ماشین", category: "depot", binName: "مرکز مواد خطرناک (Hazardous Waste)", tip: "هرگز در زباله معمولی نیندازید! به ایستگاه تحویل EWSWA ببرید." },
     { name: "لامپ کم‌مصرف و مهتابی", category: "depot", binName: "مرکز مواد خطرناک Depot", tip: "حاوی جیوه هستند و باید جداگانه تحویل داده شوند." },
     { name: "روغن خوراکی سوخته", category: "depot", binName: "مرکز تحویل EWSWA Depot", tip: "روغن را در ظرف دربسته ریخته و به مرکز تحویل دهید." },
@@ -305,14 +307,14 @@ function initEventListeners() {
 }
 
 // ==========================================
-// 4. COLLECTION LOGIC ENGINE (ACCURATE 3B CALENDAR)
+// 4. COLLECTION LOGIC ENGINE (4 OFFICIAL TYPES)
 // ==========================================
 
 function getCollectionForDate(date, zoneId) {
     const zone = ZONE_SCHEDULES[zoneId];
     if (!zone) return [];
 
-    const dayOfWeek = date.getDay(); // 0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
+    const dayOfWeek = date.getDay();
     
     if (dayOfWeek !== zone.collectionDay) {
         return [];
@@ -320,7 +322,7 @@ function getCollectionForDate(date, zoneId) {
 
     const events = [];
     
-    // 1. Organics (Green Bin / پسماند تر) -> EVERY WEEK (هفتگی)
+    // 1. Green Bin Collection (پسماند ارگانیک) -> EVERY WEEK (هفتگی)
     events.push(WASTE_TYPES.greenBin);
 
     // Calculate week difference from Base Reference Date (Aug 6, 2026)
@@ -328,7 +330,7 @@ function getCollectionForDate(date, zoneId) {
     const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
     const diffWeeks = Math.floor(diffDays / 7);
 
-    // For Zone 3B (per official PDF 3B page 17):
+    // Official Windsor Bi-weekly Schedule Parity:
     // Aug 6: Green Bin ONLY
     // Aug 13: Green Bin + Garbage + Recycling
     // Aug 20: Green Bin + Yard Waste
@@ -336,18 +338,11 @@ function getCollectionForDate(date, zoneId) {
     const isFullCollectionWeek = Math.abs(diffWeeks) % 2 === 1;
 
     if (isFullCollectionWeek) {
-        // Garbage Collection
         events.push(WASTE_TYPES.garbage);
-
-        // Alternating Blue Box / Red Box Recycling
-        if (Math.floor(Math.abs(diffWeeks) / 2) % 2 === 0) {
-            events.push(WASTE_TYPES.redBox);
-        } else {
-            events.push(WASTE_TYPES.blueBox);
-        }
+        events.push(WASTE_TYPES.recycling);
     }
 
-    // Yard Waste Collection (Aug 20 for Zone 3B)
+    // Yard Waste Collection (Paper Yard Waste Bag Day)
     if (Math.abs(diffWeeks) % 4 === 2 || (date.getDate() >= 14 && date.getDate() <= 21 && date.getMonth() === 7)) {
         events.push(WASTE_TYPES.yardWaste);
     }
@@ -526,8 +521,7 @@ function renderWizardResults() {
         card.className = 'item-card';
 
         let badgeClass = 'garbage';
-        if (item.category === 'blue-box') badgeClass = 'blue-box';
-        if (item.category === 'red-box') badgeClass = 'red-box';
+        if (item.category === 'recycling') badgeClass = 'blue-box';
         if (item.category === 'green-bin') badgeClass = 'green-bin';
         if (item.category === 'yard-waste') badgeClass = 'yard-waste';
         if (item.category === 'depot') badgeClass = 'bulk-item';

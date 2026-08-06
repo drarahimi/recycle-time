@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Custom Stylesheet with Cache Busting -->
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
     <!-- Background Animated Shapes -->
@@ -114,8 +114,8 @@
                         <div class="rule-item">
                             <i class="fa-solid fa-clock"></i>
                             <div>
-                                <strong>دوره جمع‌آوری رسمی ویندزور:</strong>
-                                <span>ارگانیک: هفتگی | زباله و بازیافت: هر ۲ هفته | ضایعات باغچه: ماهانه</span>
+                                <strong>۴ نوع جمع‌آوری رسمی ویندزور:</strong>
+                                <span>بازیافت (هر ۲ هفته) | زباله (هر ۲ هفته) | ارگانیک (هفتگی) | باغچه (ماهانه)</span>
                             </div>
                         </div>
                         <div class="rule-item">
@@ -172,16 +172,14 @@
                             <button id="today-btn" class="today-chip">امروز</button>
                         </div>
 
-                        <!-- Collection Legend -->
+                        <!-- Collection Legend (4 Official Windsor Categories) -->
                         <div class="legend-container">
-                            <span class="legend-title">راهنما:</span>
+                            <span class="legend-title">راهنما (۴ نوع جمع‌آوری):</span>
                             <div class="legend-items">
-                                <div class="legend-item"><span class="legend-color garbage"></span> زباله (هر ۲ هفته)</div>
-                                <div class="legend-item"><span class="legend-color blue-box"></span> ظروف (هر ۲ هفته)</div>
-                                <div class="legend-item"><span class="legend-color red-box"></span> کاغذ (هر ۲ هفته)</div>
-                                <div class="legend-item"><span class="legend-color green-bin"></span> ارگانیک (هفتگی)</div>
-                                <div class="legend-item"><span class="legend-color yard-waste"></span> باغچه (ماهانه)</div>
-                                <div class="legend-item"><span class="legend-color bulk-item"></span> حجیم</div>
+                                <div class="legend-item"><span class="legend-color blue-box"></span> ♻️ Recycling (بازیافت)</div>
+                                <div class="legend-item"><span class="legend-color garbage"></span> 🗑️ Garbage (زباله عمومی)</div>
+                                <div class="legend-item"><span class="legend-color green-bin"></span> 🍏 Green Bin (پسماند ارگانیک)</div>
+                                <div class="legend-item"><span class="legend-color yard-waste"></span> 🌿 Yard Waste (ضایعات باغچه)</div>
                             </div>
                         </div>
                     </div>
@@ -209,7 +207,7 @@
                 <div class="upcoming-list-container">
                     <div class="list-header">
                         <h3><i class="fa-solid fa-clock-rotate-left"></i> برنامه جمع‌آوری ۳۰ روز آینده</h3>
-                        <p>لیست مرتب‌شده نوبت‌های تخلیه برای منطقه انتخابی شما بر اساس جدول رسمی شهرداری ویندزور</p>
+                        <p>لیست مرتب‌شده نوبت‌های تخلیه برای منطقه انتخابی شما بر اساس ۴ نوع جمع‌آوری رسمی ویندزور</p>
                     </div>
                     <div id="upcoming-list-items" class="upcoming-cards-grid">
                         <!-- Populated via JS -->
@@ -232,14 +230,13 @@
                             <button id="clear-search-btn" class="clear-search hidden"><i class="fa-solid fa-xmark"></i></button>
                         </div>
 
-                        <!-- Filter Chips -->
+                        <!-- Filter Chips (Matching Windsor Legend) -->
                         <div class="wizard-filter-chips">
                             <button class="chip active" data-category="all">همه مواد</button>
-                            <button class="chip" data-category="blue-box">جعبه آبی (ظروف)</button>
-                            <button class="chip" data-category="red-box">جعبه قرمز (کاغذ)</button>
-                            <button class="chip" data-category="green-bin">پسماند ارگانیک</button>
-                            <button class="chip" data-category="yard-waste">ضایعات باغچه</button>
-                            <button class="chip" data-category="depot">مراکز تحویل / ویژه</button>
+                            <button class="chip" data-category="recycling">سطل بازیافت (Recycling)</button>
+                            <button class="chip" data-category="green-bin">سطل ارگانیک (Green Bin)</button>
+                            <button class="chip" data-category="yard-waste">ضایعات باغچه (Yard Waste)</button>
+                            <button class="chip" data-category="depot">مراکز تحویل Depot / ویژه</button>
                         </div>
                     </div>
 
@@ -322,42 +319,38 @@
 
                     <div class="rules-grid">
                         <div class="rule-card">
+                            <div class="card-icon blue"><i class="fa-solid fa-recycle"></i></div>
+                            <h4>۱. بازیافت (Recycling Collection) - هر ۲ هفته</h4>
+                            <ul>
+                                <li><strong>سطل آبی یکپارچه (Single-Stream Cart):</strong> تمام مواد بازیافتی خانگی بدون نیاز به جداسازی کاغذ و ظروف در یک سطل ریخته می‌شوند.</li>
+                                <li>بطری‌های پلاستیکی، قوطی‌های آلومینیومی، شیشه‌ها، روزنامه، مقوا و کارتن پهن‌شده.</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="card-icon garbage"><i class="fa-solid fa-trash-can"></i></div>
+                            <h4>۲. زباله عمومی (Garbage Collection) - هر ۲ هفته</h4>
+                            <ul>
+                                <li><strong>زباله غیرقابل بازیافت:</strong> هر دو هفته یک‌بار در سطل دردار (حداکثر ۱۲۵ لیتر یا ۲ کیسه).</li>
+                                <li>گذاشتن سطل حداکثر تا <strong>ساعت ۶:۰۰ صبح</strong> روز جمع‌آوری.</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-card">
                             <div class="card-icon emerald"><i class="fa-solid fa-leaf"></i></div>
-                            <h4>پسماند ارگانیک و تر (Green Bin) - هفتگی</h4>
+                            <h4>۳. پسماند تر و ارگانیک (Green Bin) - هفتگی</h4>
                             <ul>
-                                <li>جمع‌آوری <strong>هفتگی</strong> در تمام طول سال.</li>
+                                <li><strong>سطل سبز:</strong> جمع‌آوری هفتگی در تمام طول سال.</li>
                                 <li>باقیمانده غذا، استخوان، پوست میوه، دستمال کاغذی کثیف و چای کیسه‌ای.</li>
-                                <li>فقط کیسه‌های تجزیه‌پذیر (Compostable) یا کاغذ روزنامه استفاده کنید.</li>
                             </ul>
                         </div>
 
                         <div class="rule-card">
-                            <div class="card-icon blue"><i class="fa-solid fa-dumpster"></i></div>
-                            <h4>زباله عمومی و بازیافت - هر ۲ هفته یک‌بار</h4>
+                            <div class="card-icon green"><i class="fa-solid fa-box-archive"></i></div>
+                            <h4>۴. ضایعات باغچه (Yard Waste) - ماهانه</h4>
                             <ul>
-                                <li><strong>زباله عمومی:</strong> هر دو هفته یک‌بار (حداکثر ۲ کیسه یا سطل).</li>
-                                <li><strong>جعبه آبی و قرمز:</strong> هر دو هفته یک‌بار (نوبتی متناوب).</li>
-                                <li>سطل‌ها باید حداکثر تا <strong>ساعت ۶:۰۰ صبح</strong> روز جمع‌آوری بگذارید.</li>
-                            </ul>
-                        </div>
-
-                        <div class="rule-card">
-                            <div class="card-icon green"><i class="fa-solid fa-tree"></i></div>
-                            <h4>ضایعات باغچه (Yard Waste) - ماهانه</h4>
-                            <ul>
-                                <li>جمع‌آوری <strong>ماهانه یک‌بار</strong> در هفته مشخص شده.</li>
-                                <li>برگ درختان و چمن فقط در کیسه‌های کاغذی قهوه‌ای قرار گیرد.</li>
-                                <li>شاخه‌ها در طول حداکثر ۱ متر بسته‌بندی شوند.</li>
-                            </ul>
-                        </div>
-
-                        <div class="rule-card">
-                            <div class="card-icon purple"><i class="fa-solid fa-couch"></i></div>
-                            <h4>ضایعات حجیم و وسایل برقی (Bulk Items)</h4>
-                            <ul>
-                                <li>برای جمع‌آوری یخچال، مبلمان و وسایل بزرگ با شماره <strong>۳۱۱</strong> تماس بگیرید.</li>
-                                <li>وسایل الکترونیکی را می‌توانید مجانی به EWSWA Depot ببرید.</li>
-                                <li>نشانی: 3560 North Service Rd East, Windsor</li>
+                                <li><strong>کیسه کاغذی قهوه‌ای:</strong> جمع‌آوری ماهانه در روزهای مشخص‌شده در تقویم.</li>
+                                <li>برگ درختان، چمن و شاخه‌های خردشده فقط در کیسه کاغذی مخصوص.</li>
                             </ul>
                         </div>
                     </div>
@@ -431,6 +424,6 @@
     </div>
 
     <!-- JavaScript Files with Cache Busting -->
-    <script src="app.js?v=8"></script>
+    <script src="app.js?v=9"></script>
 </body>
 </html>
