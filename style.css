@@ -732,7 +732,7 @@ body {
 }
 
 .day-shamsi { font-weight: 800; font-size: 0.95rem; color: var(--text-primary); }
-.day-gregorian { font-size: 0.68rem; color: var(--text-muted); }
+.day-gregorian { font-size: 0.7rem; color: var(--text-muted); }
 
 .day-badges {
     display: flex;
@@ -742,7 +742,7 @@ body {
 }
 
 .mini-badge {
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     font-weight: 600;
     padding: 2px 4px;
     border-radius: var(--radius-sm);
@@ -752,6 +752,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .mini-badge.garbage { background: var(--color-garbage-bg); color: var(--color-garbage); }
@@ -759,6 +760,51 @@ body {
 .mini-badge.green-bin { background: var(--color-green-bin-bg); color: var(--color-green-bin); }
 .mini-badge.yard-waste { background: var(--color-yard-waste-bg); color: var(--color-yard-waste); }
 .mini-badge.bulk-item { background: var(--color-bulk-bg); color: var(--color-bulk); }
+
+/* Windsor Pamphlet Vector Icons System */
+.pamphlet-icon {
+    width: 1.6em;
+    height: 1.6em;
+    min-width: 1.6em;
+    min-height: 1.6em;
+    vertical-align: -0.22em;
+    display: inline-block;
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.22));
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pamphlet-icon:hover {
+    transform: scale(1.15);
+}
+
+.mini-badge .pamphlet-icon {
+    width: 1.4em;
+    height: 1.4em;
+    min-width: 1.4em;
+    min-height: 1.4em;
+}
+
+.legend-item .pamphlet-icon {
+    width: 1.85em;
+    height: 1.85em;
+    min-width: 1.85em;
+    min-height: 1.85em;
+}
+
+.rule-card .pamphlet-icon {
+    width: 2.8em;
+    height: 2.8em;
+    min-width: 2.8em;
+    min-height: 2.8em;
+}
+
+.badge .pamphlet-icon {
+    width: 1.5em;
+    height: 1.5em;
+    min-width: 1.5em;
+    min-height: 1.5em;
+}
 
 /* Upcoming List Tab */
 .upcoming-list-container {
@@ -1139,21 +1185,49 @@ body {
     }
 
     .day-cell {
-        min-height: 65px;
-        padding: 3px;
+        min-height: 62px;
+        padding: 4px 3px;
+        justify-content: flex-start;
+        gap: 3px;
+    }
+
+    .day-cell-header {
+        justify-content: center;
     }
 
     .day-shamsi {
-        font-size: 0.85rem;
+        font-size: 0.92rem;
+        font-weight: 800;
+        line-height: 1;
     }
 
     .day-gregorian {
         display: none;
     }
 
+    .day-badges {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        margin-top: 2px;
+    }
+
     .mini-badge {
-        font-size: 0.6rem;
-        padding: 1px 3px;
-        gap: 2px;
+        padding: 2px;
+        background: transparent !important;
+        box-shadow: none;
+    }
+
+    .mini-badge span {
+        display: none; /* Hide text inside tiny mobile cells to ensure zero overflow */
+    }
+
+    .mini-badge .pamphlet-icon {
+        width: 1.55em;
+        height: 1.55em;
+        min-width: 1.55em;
+        min-height: 1.55em;
     }
 }

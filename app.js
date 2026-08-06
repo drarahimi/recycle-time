@@ -52,14 +52,14 @@ function toPersianDigits(str) {
 
 // Official City of Windsor Collection Zones (1A to 4B)
 const ZONE_SCHEDULES = {
-    "1A": { name: "منطقه 1A (دوشنبه‌ها - غرب ویندزور / N9B, N9C, N9J)", collectionDay: 1, isCycleA: true },
-    "1B": { name: "منطقه 1B (دوشنبه‌ها - جنوب غرب / N9E)", collectionDay: 1, isCycleA: false },
-    "2A": { name: "منطقه 2A (سه‌شنبه‌ها - مرکز شهر / N9A, N8X)", collectionDay: 2, isCycleA: true },
-    "2B": { name: "منطقه 2B (سه‌شنبه‌ها - جنوب مرکز / N8X, N9G)", collectionDay: 2, isCycleA: false },
-    "3A": { name: "منطقه 3A (چهارشنبه‌ها - شرق مرکز / N8S, N8Y)", collectionDay: 3, isCycleA: true },
-    "3B": { name: "منطقه 3B (پنج‌شنبه‌ها - جنوب شرق / N8W, N0R, N8V)", collectionDay: 4, isCycleA: false },
-    "4A": { name: "منطقه 4A (پنج‌شنبه‌ها - ریورساید / N8P, N8S East)", collectionDay: 4, isCycleA: true },
-    "4B": { name: "منطقه 4B (جمعه‌ها - فورست گلید / N8R, N8T, N8N)", collectionDay: 5, isCycleA: false }
+    "1A": { name: "منطقه 1A (دوشنبه‌ها - غرب ویندزور / N9B, N9C, N9J)", shortName: "منطقه 1A (دوشنبه‌ها)", collectionDay: 1, isCycleA: true },
+    "1B": { name: "منطقه 1B (دوشنبه‌ها - جنوب غرب / N9E)", shortName: "منطقه 1B (دوشنبه‌ها)", collectionDay: 1, isCycleA: false },
+    "2A": { name: "منطقه 2A (سه‌شنبه‌ها - مرکز شهر / N9A, N8X)", shortName: "منطقه 2A (سه‌شنبه‌ها)", collectionDay: 2, isCycleA: true },
+    "2B": { name: "منطقه 2B (سه‌شنبه‌ها - جنوب مرکز / N8X, N9G)", shortName: "منطقه 2B (سه‌شنبه‌ها)", collectionDay: 2, isCycleA: false },
+    "3A": { name: "منطقه 3A (چهارشنبه‌ها - شرق مرکز / N8S, N8Y)", shortName: "منطقه 3A (چهارشنبه‌ها)", collectionDay: 3, isCycleA: true },
+    "3B": { name: "منطقه 3B (پنج‌شنبه‌ها - جنوب شرق / N8W, N0R, N8V)", shortName: "منطقه 3B (پنج‌شنبه‌ها)", collectionDay: 4, isCycleA: false },
+    "4A": { name: "منطقه 4A (پنج‌شنبه‌ها - ریورساید / N8P, N8S East)", shortName: "منطقه 4A (پنج‌شنبه‌ها)", collectionDay: 4, isCycleA: true },
+    "4B": { name: "منطقه 4B (جمعه‌ها - فورست گلید / N8R, N8T, N8N)", shortName: "منطقه 4B (جمعه‌ها)", collectionDay: 5, isCycleA: false }
 };
 
 // Windsor Postal Code Lookup Dictionary
@@ -74,12 +74,82 @@ const POSTAL_TO_ZONE_MAP = {
     "N8R": "4B", "N8T": "4B", "N8N": "4B"
 };
 
+// Function generating official City of Windsor pamphlet-consistent vector icons
+function getPamphletIconSvg(typeId) {
+    switch (typeId) {
+        case 'recycling':
+        case 'blue-box':
+            return `<svg viewBox="0 0 24 24" class="pamphlet-icon recycling-icon" aria-hidden="true">
+                <circle cx="6.5" cy="21.5" r="1.8" fill="#0f172a"/>
+                <circle cx="6.5" cy="21.5" r="0.7" fill="#94a3b8"/>
+                <circle cx="17.5" cy="21.5" r="1.8" fill="#0f172a"/>
+                <circle cx="17.5" cy="21.5" r="0.7" fill="#94a3b8"/>
+                <path d="M5 6L19 6L17.5 21C17.4 21.6 16.9 22 16.3 22H7.7C7.1 22 6.6 21.6 6.5 21L5 6Z" fill="#1d5c96"/>
+                <path d="M3.5 4C3.5 3.4 4 3 4.6 3H19.4C20 3 20.5 3.4 20.5 4V6H3.5V4Z" fill="#0f2942"/>
+                <rect x="9" y="1.5" width="6" height="1.5" rx="0.75" fill="#0f2942"/>
+                <circle cx="12" cy="14" r="4" fill="#ffffff"/>
+                <path fill="#1d5c96" d="M12 11.2L13.3 13H12.4V14.2H11.6V13H10.7L12 11.2ZM9.8 16L8.8 14.3L9.5 13.9L10.3 15.2L9.8 16ZM14.2 16L13.7 15.2L14.5 13.9L15.2 14.3L14.2 16Z"/>
+            </svg>`;
+        case 'garbage':
+            return `<svg viewBox="0 0 24 24" class="pamphlet-icon garbage-icon" aria-hidden="true">
+                <path d="M5 7L19 7L17.8 21.2C17.7 21.7 17.2 22 16.7 22H7.3C6.8 22 6.3 21.7 6.2 21.2L5 7Z" fill="#64748b"/>
+                <line x1="8" y1="9" x2="8.5" y2="20" stroke="#334155" stroke-width="1.3" stroke-linecap="round"/>
+                <line x1="10.7" y1="9" x2="10.8" y2="20" stroke="#334155" stroke-width="1.3" stroke-linecap="round"/>
+                <line x1="13.3" y1="9" x2="13.2" y2="20" stroke="#334155" stroke-width="1.3" stroke-linecap="round"/>
+                <line x1="16" y1="9" x2="15.5" y2="20" stroke="#334155" stroke-width="1.3" stroke-linecap="round"/>
+                <rect x="4" y="6" width="16" height="1.8" rx="0.9" fill="#475569"/>
+                <path d="M4.5 6L19.5 6L18 3.8C17.8 3.3 17.3 3 16.8 3H7.2C6.7 3 6.2 3.3 6 3.8L4.5 6Z" fill="#475569"/>
+                <rect x="9.5" y="1.2" width="5" height="1.8" rx="0.9" fill="#334155"/>
+                <path d="M3.5 10C2.7 10 2 10.7 2 11.5C2 12.3 2.7 13 3.5 13" stroke="#334155" stroke-width="1.4" fill="none"/>
+                <path d="M20.5 10C21.3 10 22 10.7 22 11.5C22 12.3 21.3 13 20.5 13" stroke="#334155" stroke-width="1.4" fill="none"/>
+            </svg>`;
+        case 'green-bin':
+        case 'greenBin':
+            return `<svg viewBox="0 0 24 24" class="pamphlet-icon green-bin-icon" aria-hidden="true">
+                <circle cx="6.5" cy="21.5" r="1.8" fill="#0f172a"/>
+                <circle cx="6.5" cy="21.5" r="0.7" fill="#94a3b8"/>
+                <circle cx="17.5" cy="21.5" r="1.8" fill="#0f172a"/>
+                <circle cx="17.5" cy="21.5" r="0.7" fill="#94a3b8"/>
+                <path d="M5 6L19 6L17.5 21C17.4 21.6 16.9 22 16.3 22H7.7C7.1 22 6.6 21.6 6.5 21L5 6Z" fill="#16a34a"/>
+                <path d="M3.5 4C3.5 3.4 4 3 4.6 3H19.4C20 3 20.5 3.4 20.5 4V6H3.5V4Z" fill="#14532d"/>
+                <rect x="9" y="1.5" width="6" height="1.5" rx="0.75" fill="#14532d"/>
+                <rect x="7.5" y="10.5" width="9" height="7" rx="1.5" fill="rgba(255,255,255,0.28)"/>
+                <text x="12" y="15.8" font-size="5.8" font-weight="900" font-family="Arial, Helvetica, sans-serif" fill="#ffffff" text-anchor="middle">GB</text>
+            </svg>`;
+        case 'yard-waste':
+        case 'yardWaste':
+            return `<svg viewBox="0 0 24 24" class="pamphlet-icon yard-waste-icon" aria-hidden="true">
+                <path d="M5.5 6L18.5 6L17.2 21.2C17.1 21.7 16.6 22 16.1 22H7.9C7.4 22 6.9 21.7 6.8 21.2L5.5 6Z" fill="#d97706"/>
+                <path d="M5.5 6L7.5 22" stroke="#b45309" stroke-width="0.9"/>
+                <path d="M18.5 6L16.5 22" stroke="#b45309" stroke-width="0.9"/>
+                <path d="M4.5 6L5.5 2.5 L8.5 3.8 L12 2 L15.5 3.8 L18.5 2.5 L19.5 6 Z" fill="#b45309"/>
+                <path d="M5.5 6C5.5 6 9 7.2 12 6C15 4.8 18.5 6 18.5 6" stroke="#78350f" stroke-width="1" fill="none"/>
+                <circle cx="12" cy="14" r="3.5" fill="#ffffff"/>
+                <g fill="#15803d">
+                    <path d="M12 11.2C12.6 12 13 12.5 12.7 13.3C12.3 13 12 12.6 12 11.2Z"/>
+                    <path d="M10.8 14.2C10.8 13.3 11.4 13.1 12.5 13.8C11.8 14.1 11.2 14.5 10.8 14.2Z"/>
+                    <path d="M13.2 14.2C13.2 13.3 12.6 13.1 11.5 13.8C12.2 14.1 12.8 14.5 13.2 14.2Z"/>
+                </g>
+            </svg>`;
+        case 'depot':
+        case 'bulk-item':
+            return `<svg viewBox="0 0 24 24" class="pamphlet-icon bulk-icon" aria-hidden="true">
+                <path d="M4 12L20 12L20 17C20 17.6 19.6 18 19 18L5 18C4.4 18 4 17.6 4 17Z" fill="#9333ea"/>
+                <rect x="6" y="7" width="12" height="5" rx="1" fill="#7e22ce"/>
+                <circle cx="7" cy="18" r="1.8" fill="#0f172a"/>
+                <circle cx="17" cy="18" r="1.8" fill="#0f172a"/>
+            </svg>`;
+        default:
+            return `<i class="fa-solid fa-recycle"></i>`;
+    }
+}
+
 // The 4 Official Windsor Waste Collection Types (Matching City Legend)
 const WASTE_TYPES = {
-    recycling: { id: "recycling", name: "بازیافت (Recycling - هر ۲ هفته)", icon: "fa-recycle", colorClass: "blue-box", desc: "سطل آبی یکپارچه: کاغذ، مقوا، ظروف فلزی و پلاستیکی" },
-    garbage: { id: "garbage", name: "زباله عمومی (Garbage - هر ۲ هفته)", icon: "fa-trash-can", colorClass: "garbage", desc: "زباله خانگی غیرقابل بازیافت در سطل دردار" },
-    greenBin: { id: "green-bin", name: "پسماند ارگانیک (Green Bin - هفتگی)", icon: "fa-leaf", colorClass: "green-bin", desc: "باقیمانده غذا و پسماند تر در سطل سبز" },
-    yardWaste: { id: "yard-waste", name: "ضایعات باغچه (Yard Waste - ماهانه)", icon: "fa-box-archive", colorClass: "yard-waste", desc: "برگ و شاخه‌ها فقط در کیسه کاغذی قهوه‌ای" }
+    recycling: { id: "recycling", name: "بازیافت", colorClass: "blue-box", desc: "سطل آبی یکپارچه: کاغذ، مقوا، ظروف فلزی و پلاستیکی" },
+    garbage: { id: "garbage", name: "زباله عمومی", colorClass: "garbage", desc: "زباله خانگی غیرقابل بازیافت در سطل دردار" },
+    greenBin: { id: "green-bin", name: "پسماند ارگانیک", colorClass: "green-bin", desc: "باقیمانده غذا و پسماند تر در سطل سبز" },
+    yardWaste: { id: "yard-waste", name: "ضایعات باغچه", colorClass: "yard-waste", desc: "برگ و شاخه‌ها فقط در کیسه کاغذی قهوه‌ای" }
 };
 
 // Database for Waste Wizard (زباله‌یاب)
@@ -342,8 +412,9 @@ function getCollectionForDate(date, zoneId) {
         events.push(WASTE_TYPES.recycling);
     }
 
-    // Yard Waste Collection (Paper Yard Waste Bag Day)
-    if (Math.abs(diffWeeks) % 4 === 2 || (date.getDate() >= 14 && date.getDate() <= 21 && date.getMonth() === 7)) {
+    // 3. Yard Waste Collection (کیسه کاغذی قهوه‌ای ضایعات باغچه) -> Every 3rd week of the month (Days 15-21)
+    const dayOfMonth = date.getDate();
+    if (dayOfMonth >= 15 && dayOfMonth <= 21) {
         events.push(WASTE_TYPES.yardWaste);
     }
 
@@ -368,7 +439,7 @@ function renderHeroPickup() {
     document.getElementById('current-today-date').innerText = todayStr;
 
     const currentZoneObj = ZONE_SCHEDULES[currentState.currentZone];
-    document.getElementById('zone-info-tag').innerText = `منطقه انتخابی شما: ${currentZoneObj.name}`;
+    document.getElementById('zone-info-tag').innerText = `منطقه انتخابی: ${currentZoneObj.shortName || currentZoneObj.name}`;
 
     // Find next pickup date
     let checkDate = new Date(today);
@@ -393,7 +464,7 @@ function renderHeroPickup() {
     nextEvents.forEach(item => {
         const badge = document.createElement('span');
         badge.className = `badge ${item.colorClass}`;
-        badge.innerHTML = `<i class="fa-solid ${item.icon}"></i> ${item.name}`;
+        badge.innerHTML = `${getPamphletIconSvg(item.id)} ${item.name}`;
         badgesContainer.appendChild(badge);
     });
 }
@@ -437,12 +508,12 @@ function renderCalendar() {
         
         let badgesHtml = '';
         events.forEach(ev => {
-            badgesHtml += `<div class="mini-badge ${ev.colorClass}"><i class="fa-solid ${ev.icon}"></i> ${ev.name}</div>`;
+            badgesHtml += `<div class="mini-badge ${ev.colorClass}">${getPamphletIconSvg(ev.id)} <span>${ev.name}</span></div>`;
         });
 
         cell.innerHTML = `
             <div class="day-cell-header">
-                <span class="day-shamsi">${d} ${GREGORIAN_MONTHS_FA[month].substring(0, 3)}</span>
+                <span class="day-shamsi">${toPersianDigits(d)}</span>
                 <span class="day-gregorian">${jDate.day} ${jDate.month}</span>
             </div>
             <div class="day-badges">
@@ -476,7 +547,7 @@ function renderUpcomingList() {
             card.className = 'upcoming-card';
 
             let itemsHtml = events.map(ev => 
-                `<span class="badge ${ev.colorClass}"><i class="fa-solid ${ev.icon}"></i> ${ev.name}</span>`
+                `<span class="badge ${ev.colorClass}">${getPamphletIconSvg(ev.id)} ${ev.name}</span>`
             ).join(' ');
 
             card.innerHTML = `
@@ -529,7 +600,7 @@ function renderWizardResults() {
         card.innerHTML = `
             <div class="item-header">
                 <span class="item-name">${item.name}</span>
-                <span class="item-bin-tag badge ${badgeClass}">${item.binName}</span>
+                <span class="item-bin-tag badge ${badgeClass}">${getPamphletIconSvg(item.category)} ${item.binName}</span>
             </div>
             <p class="item-tip"><i class="fa-solid fa-lightbulb" style="color: var(--accent-cyan);"></i> ${item.tip}</p>
         `;
@@ -553,8 +624,8 @@ function openDayModal(gDate, jDate, events) {
         let html = '<h4 style="font-size: 0.95rem; margin-bottom: 8px;">پسماندهای قابل جمع‌آوری در این روز:</h4><div style="display:flex; flex-direction:column; gap:10px;">';
         events.forEach(ev => {
             html += `
-                <div class="rule-item" style="background: var(--bg-primary); padding: 10px; border-radius: var(--radius-sm);">
-                    <i class="fa-solid ${ev.icon}" style="font-size: 1.3rem;"></i>
+                <div class="rule-item" style="background: var(--bg-primary); padding: 10px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px;">
+                    ${getPamphletIconSvg(ev.id)}
                     <div>
                         <strong style="color: var(--text-primary);">${ev.name}</strong>
                         <span style="font-size: 0.82rem; color: var(--text-secondary);">${ev.desc}</span>
