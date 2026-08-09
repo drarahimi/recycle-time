@@ -9,10 +9,16 @@
     <!-- Mobile PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#10b981">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="پسماند ویندزور">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%2310b981'/><path fill='%23ffffff' d='M256 96c-48.5 0-92 21.2-121.7 54.9L96 112v96h96l-37.5-37.5C179.3 144.1 214.8 128 256 128c62.6 0 115 44.4 125.7 104h32.7C403.1 161.4 336.5 96 256 96zm144 208v-96h-96l37.5 37.5C332.7 367.9 297.2 384 256 384c-62.6 0-115-44.4-125.7-104H97.6C108.9 350.6 175.5 416 256 416c48.5 0 92-21.2 121.7-54.9L400 400z'/></svg>">
+
+    <!-- Home-screen / tab icons (PNG for full iOS + Android compatibility) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=14">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=14">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=14">
+    <link rel="shortcut icon" href="favicon-32.png?v=14">
 
     <!-- Google Fonts: Vazirmatn -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +29,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Custom Stylesheet with Cache Busting -->
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
     <!-- Background Animated Shapes -->
@@ -69,13 +75,13 @@
 
                 <div class="control-group">
                     <select id="zone-select" class="zone-dropdown">
-                        <option value="1A">منطقه 1A (دوشنبه - غرب ویندزور / N9B, N9C, N9J)</option>
-                        <option value="1B">منطقه 1B (دوشنبه - جنوب غرب / N9E)</option>
-                        <option value="2A">منطقه 2A (سه‌شنبه - مرکز شهر / N9A, N8X North)</option>
-                        <option value="2B">منطقه 2B (سه‌شنبه - جنوب مرکز / N8X South, N9G)</option>
-                        <option value="3A">منطقه 3A (چهارشنبه - شرق مرکز / N8S West, N8Y)</option>
+                        <option value="1A">منطقه 1A (سه‌شنبه - غرب ویندزور / N9B, N9C, N9J)</option>
+                        <option value="1B">منطقه 1B (سه‌شنبه - جنوب غرب / N9E)</option>
+                        <option value="2A">منطقه 2A (چهارشنبه - مرکز شهر / N9A, N8X North)</option>
+                        <option value="2B">منطقه 2B (چهارشنبه - جنوب مرکز / N8X South, N9G)</option>
+                        <option value="3A">منطقه 3A (پنج‌شنبه - شرق مرکز / N8S West, N8Y)</option>
                         <option value="3B" selected>منطقه 3B (پنج‌شنبه - جنوب شرق / N8W, N0R, N8V)</option>
-                        <option value="4A">منطقه 4A (پنج‌شنبه - ریورساید / N8P, N8S East)</option>
+                        <option value="4A">منطقه 4A (جمعه - ریورساید / N8P, N8S East)</option>
                         <option value="4B">منطقه 4B (جمعه - فورست گلید / N8R, N8T, N8N)</option>
                     </select>
                 </div>
@@ -115,7 +121,7 @@
                             <i class="fa-solid fa-clock"></i>
                             <div>
                                 <strong>۴ نوع جمع‌آوری رسمی ویندزور:</strong>
-                                <span>بازیافت (هر ۲ هفته) | زباله (هر ۲ هفته) | ارگانیک (هفتگی) | باغچه (هفته ۳ هر ماه)</span>
+                                <span>بازیافت (هر ۲ هفته) | زباله (هر ۲ هفته) | ارگانیک (هفتگی) | باغچه (هر ۲ هفته، فصلی)</span>
                             </div>
                         </div>
                         <div class="rule-item">
@@ -147,12 +153,16 @@
                 </div>
                 
                 <div class="tab-actions">
+                    <button id="update-schedule-btn" class="action-btn secondary" title="دریافت آخرین برنامه رسمی از سرور شهرداری ویندزور">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> بروزرسانی برنامه
+                    </button>
                     <button id="download-ics-btn" class="action-btn secondary" title="دانلود تقویم برای تقویم گوگل و آیفون">
                         <i class="fa-solid fa-download"></i> خروجی (ICS)
                     </button>
                     <button id="print-calendar-btn" class="action-btn secondary" title="چاپ تقویم">
                         <i class="fa-solid fa-print"></i> چاپ
                     </button>
+                    <span id="schedule-updated-label" class="schedule-updated-label" title="زمان آخرین بروزرسانی برنامه از سرور شهرداری"></span>
                 </div>
             </div>
 
@@ -191,6 +201,10 @@
                                 <div class="legend-item">
                                     <svg viewBox="0 0 24 24" class="pamphlet-icon yard-waste-icon" aria-hidden="true"><path d="M5.5 6L18.5 6L17.2 21.2C17.1 21.7 16.6 22 16.1 22H7.9C7.4 22 6.9 21.7 6.8 21.2L5.5 6Z" fill="#d97706"/><path d="M5.5 6L7.5 22" stroke="#b45309" stroke-width="0.9"/><path d="M18.5 6L16.5 22" stroke="#b45309" stroke-width="0.9"/><path d="M4.5 6L5.5 2.5 L8.5 3.8 L12 2 L15.5 3.8 L18.5 2.5 L19.5 6 Z" fill="#b45309"/><path d="M5.5 6C5.5 6 9 7.2 12 6C15 4.8 18.5 6 18.5 6" stroke="#78350f" stroke-width="1" fill="none"/><circle cx="12" cy="14" r="3.5" fill="#ffffff"/><g fill="#15803d"><path d="M12 11.2C12.6 12 13 12.5 12.7 13.3C12.3 13 12 12.6 12 11.2Z"/><path d="M10.8 14.2C10.8 13.3 11.4 13.1 12.5 13.8C11.8 14.1 11.2 14.5 10.8 14.2Z"/><path d="M13.2 14.2C13.2 13.3 12.6 13.1 11.5 13.8C12.2 14.1 12.8 14.5 13.2 14.2Z"/></g></svg>
                                     <span>ضایعات باغچه</span>
+                                </div>
+                                <div class="legend-item">
+                                    <i class="fa-solid fa-star" style="color: #d97706;" aria-hidden="true"></i>
+                                    <span>تعطیل رسمی</span>
                                 </div>
                             </div>
                         </div>
@@ -436,6 +450,6 @@
     </div>
 
     <!-- JavaScript Files with Cache Busting -->
-    <script src="app.js?v=10"></script>
+    <script src="app.js?v=14"></script>
 </body>
 </html>

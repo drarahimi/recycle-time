@@ -51,15 +51,17 @@ function toPersianDigits(str) {
 }
 
 // Official City of Windsor Collection Zones (1A to 4B)
+// Collection days verified against the official 2026-2027 calendar / open-data feed:
+// 1A,1B = Tuesday | 2A,2B = Wednesday | 3A,3B = Thursday | 4A,4B = Friday
 const ZONE_SCHEDULES = {
-    "1A": { name: "منطقه 1A (دوشنبه‌ها - غرب ویندزور / N9B, N9C, N9J)", shortName: "منطقه 1A (دوشنبه‌ها)", collectionDay: 1, isCycleA: true },
-    "1B": { name: "منطقه 1B (دوشنبه‌ها - جنوب غرب / N9E)", shortName: "منطقه 1B (دوشنبه‌ها)", collectionDay: 1, isCycleA: false },
-    "2A": { name: "منطقه 2A (سه‌شنبه‌ها - مرکز شهر / N9A, N8X)", shortName: "منطقه 2A (سه‌شنبه‌ها)", collectionDay: 2, isCycleA: true },
-    "2B": { name: "منطقه 2B (سه‌شنبه‌ها - جنوب مرکز / N8X, N9G)", shortName: "منطقه 2B (سه‌شنبه‌ها)", collectionDay: 2, isCycleA: false },
-    "3A": { name: "منطقه 3A (چهارشنبه‌ها - شرق مرکز / N8S, N8Y)", shortName: "منطقه 3A (چهارشنبه‌ها)", collectionDay: 3, isCycleA: true },
-    "3B": { name: "منطقه 3B (پنج‌شنبه‌ها - جنوب شرق / N8W, N0R, N8V)", shortName: "منطقه 3B (پنج‌شنبه‌ها)", collectionDay: 4, isCycleA: false },
-    "4A": { name: "منطقه 4A (پنج‌شنبه‌ها - ریورساید / N8P, N8S East)", shortName: "منطقه 4A (پنج‌شنبه‌ها)", collectionDay: 4, isCycleA: true },
-    "4B": { name: "منطقه 4B (جمعه‌ها - فورست گلید / N8R, N8T, N8N)", shortName: "منطقه 4B (جمعه‌ها)", collectionDay: 5, isCycleA: false }
+    "1A": { name: "منطقه 1A (سه‌شنبه‌ها - غرب ویندزور / N9B, N9C, N9J)", shortName: "منطقه 1A (سه‌شنبه‌ها)", collectionDay: 2 },
+    "1B": { name: "منطقه 1B (سه‌شنبه‌ها - جنوب غرب / N9E)", shortName: "منطقه 1B (سه‌شنبه‌ها)", collectionDay: 2 },
+    "2A": { name: "منطقه 2A (چهارشنبه‌ها - مرکز شهر / N9A, N8X)", shortName: "منطقه 2A (چهارشنبه‌ها)", collectionDay: 3 },
+    "2B": { name: "منطقه 2B (چهارشنبه‌ها - جنوب مرکز / N8X, N9G)", shortName: "منطقه 2B (چهارشنبه‌ها)", collectionDay: 3 },
+    "3A": { name: "منطقه 3A (پنج‌شنبه‌ها - شرق مرکز / N8S, N8Y)", shortName: "منطقه 3A (پنج‌شنبه‌ها)", collectionDay: 4 },
+    "3B": { name: "منطقه 3B (پنج‌شنبه‌ها - جنوب شرق / N8W, N0R, N8V)", shortName: "منطقه 3B (پنج‌شنبه‌ها)", collectionDay: 4 },
+    "4A": { name: "منطقه 4A (جمعه‌ها - ریورساید / N8P, N8S East)", shortName: "منطقه 4A (جمعه‌ها)", collectionDay: 5 },
+    "4B": { name: "منطقه 4B (جمعه‌ها - فورست گلید / N8R, N8T, N8N)", shortName: "منطقه 4B (جمعه‌ها)", collectionDay: 5 }
 };
 
 // Windsor Postal Code Lookup Dictionary
@@ -187,8 +189,177 @@ let currentState = {
     deferredPwaPrompt: null
 };
 
-// Base Anchor Reference Date (Aug 6, 2026 is Organics Only for Zone 3B per official PDF page 17)
-const BASE_REFERENCE_DATE = new Date(2026, 7, 6);
+// AUTHORITATIVE City of Windsor collection data (2026-2027 calendar, valid Apr 1 2026 - Mar 31 2027).
+// Source: opendata.citywindsor.ca/api/events/wasteCollection (per-district feed).
+// Every date is taken directly from the City's published schedule, so per-zone collection days,
+// bi-weekly parity, seasonal yard-waste dates AND statutory-holiday deferrals are all exact.
+// Codes: R=Recycle, G=Garbage, O=Organics (Green Bin), Y=Yard Waste. Key format: YYYY-MM-DD (local).
+const SCHEDULE_RANGE = { start: '2026-04-01', end: '2027-03-31' };
+const ZONE_COLLECTION_DATA = {
+  "1A": {"2026-04-07":"O","2026-04-14":"RGO","2026-04-21":"OY","2026-04-28":"RGO","2026-05-05":"OY","2026-05-12":"RGO","2026-05-19":"OY","2026-05-26":"RGO","2026-06-02":"O","2026-06-09":"RGO","2026-06-16":"OY","2026-06-23":"RGO","2026-06-30":"O","2026-07-07":"RGO","2026-07-14":"OY","2026-07-21":"RGO","2026-07-28":"O","2026-08-04":"RGO","2026-08-11":"OY","2026-08-18":"RGO","2026-08-25":"O","2026-09-01":"RGO","2026-09-08":"OY","2026-09-15":"RGO","2026-09-22":"O","2026-09-29":"RGO","2026-10-06":"OY","2026-10-13":"RGO","2026-10-20":"OY","2026-10-27":"RGO","2026-11-03":"OY","2026-11-10":"RGO","2026-11-17":"OY","2026-11-24":"RGO","2026-12-01":"OY","2026-12-08":"RGO","2026-12-15":"O","2026-12-22":"RGO","2026-12-29":"O","2027-01-05":"RGO","2027-01-12":"OY","2027-01-19":"RGO","2027-01-26":"O","2027-02-02":"RGO","2027-02-09":"O","2027-02-16":"RGO","2027-02-23":"O","2027-03-02":"RGO","2027-03-09":"O","2027-03-16":"RGO","2027-03-23":"O","2027-03-30":"RGO"},
+  "1B": {"2026-04-07":"RGO","2026-04-14":"O","2026-04-21":"RGO","2026-04-28":"OY","2026-05-05":"RGO","2026-05-12":"OY","2026-05-19":"RGO","2026-05-26":"OY","2026-06-02":"RGO","2026-06-09":"OY","2026-06-16":"RGO","2026-06-23":"O","2026-06-30":"RGO","2026-07-07":"O","2026-07-14":"RGO","2026-07-21":"OY","2026-07-28":"RGO","2026-08-04":"O","2026-08-11":"RGO","2026-08-18":"OY","2026-08-25":"RGO","2026-09-01":"O","2026-09-08":"RGO","2026-09-15":"OY","2026-09-22":"RGO","2026-09-29":"O","2026-10-06":"RGO","2026-10-13":"OY","2026-10-20":"RGO","2026-10-27":"OY","2026-11-03":"RGO","2026-11-10":"OY","2026-11-17":"RGO","2026-11-24":"OY","2026-12-01":"RGO","2026-12-08":"OY","2026-12-15":"RGO","2026-12-22":"O","2026-12-29":"RGO","2027-01-05":"O","2027-01-12":"RGOY","2027-01-19":"O","2027-01-26":"RGO","2027-02-02":"O","2027-02-09":"RGO","2027-02-16":"O","2027-02-23":"RGO","2027-03-02":"O","2027-03-09":"RGO","2027-03-16":"O","2027-03-23":"RGO","2027-03-30":"O"},
+  "2A": {"2026-04-01":"RGO","2026-04-08":"O","2026-04-15":"RGO","2026-04-22":"OY","2026-04-29":"RGO","2026-05-06":"OY","2026-05-13":"RGO","2026-05-20":"OY","2026-05-27":"RGO","2026-06-03":"OY","2026-06-10":"RGO","2026-06-17":"O","2026-06-24":"RGO","2026-07-02":"O","2026-07-08":"RGO","2026-07-15":"OY","2026-07-22":"RGO","2026-07-29":"O","2026-08-05":"RGO","2026-08-12":"OY","2026-08-19":"RGO","2026-08-26":"O","2026-09-02":"RGO","2026-09-09":"OY","2026-09-16":"RGO","2026-09-23":"O","2026-09-30":"RGO","2026-10-07":"OY","2026-10-14":"RGO","2026-10-21":"OY","2026-10-28":"RGO","2026-11-04":"OY","2026-11-11":"RGO","2026-11-18":"OY","2026-11-25":"RGO","2026-12-02":"OY","2026-12-09":"RGO","2026-12-16":"O","2026-12-23":"RGO","2026-12-30":"O","2027-01-06":"RGO","2027-01-13":"OY","2027-01-20":"RGO","2027-01-27":"O","2027-02-03":"RGO","2027-02-10":"O","2027-02-17":"RGO","2027-02-24":"O","2027-03-03":"RGO","2027-03-10":"O","2027-03-17":"RGO","2027-03-24":"O","2027-03-31":"RGO"},
+  "2B": {"2026-04-01":"O","2026-04-08":"RGO","2026-04-15":"O","2026-04-22":"RGO","2026-04-29":"OY","2026-05-06":"RGO","2026-05-13":"OY","2026-05-20":"RGO","2026-05-27":"OY","2026-06-03":"RGO","2026-06-10":"OY","2026-06-17":"RGO","2026-06-24":"O","2026-07-02":"RGO","2026-07-08":"O","2026-07-15":"RGO","2026-07-22":"OY","2026-07-29":"RGO","2026-08-05":"O","2026-08-12":"RGO","2026-08-19":"OY","2026-08-26":"RGO","2026-09-02":"O","2026-09-09":"RGO","2026-09-16":"OY","2026-09-23":"RGO","2026-09-30":"O","2026-10-07":"RGO","2026-10-14":"OY","2026-10-21":"RGO","2026-10-28":"OY","2026-11-04":"RGO","2026-11-11":"OY","2026-11-18":"RGO","2026-11-25":"OY","2026-12-02":"RGO","2026-12-09":"OY","2026-12-16":"RGO","2026-12-23":"O","2026-12-30":"RGO","2027-01-06":"O","2027-01-13":"RGOY","2027-01-20":"O","2027-01-27":"RGO","2027-02-03":"O","2027-02-10":"RGO","2027-02-17":"O","2027-02-24":"RGO","2027-03-03":"O","2027-03-10":"RGO","2027-03-17":"O","2027-03-24":"RGO","2027-03-31":"O"},
+  "3A": {"2026-04-02":"RGO","2026-04-09":"O","2026-04-16":"RGO","2026-04-23":"OY","2026-04-30":"RGO","2026-05-07":"OY","2026-05-14":"RGO","2026-05-21":"OY","2026-05-28":"RGO","2026-06-04":"OY","2026-06-11":"RGO","2026-06-18":"O","2026-06-25":"RGO","2026-07-03":"O","2026-07-09":"RGO","2026-07-16":"OY","2026-07-23":"RGO","2026-07-30":"O","2026-08-06":"RGO","2026-08-13":"OY","2026-08-20":"RGO","2026-08-27":"O","2026-09-03":"RGO","2026-09-10":"OY","2026-09-17":"RGO","2026-09-24":"O","2026-10-01":"RGO","2026-10-08":"OY","2026-10-15":"RGO","2026-10-22":"OY","2026-10-29":"RGO","2026-11-05":"OY","2026-11-12":"RGO","2026-11-19":"OY","2026-11-26":"RGO","2026-12-03":"OY","2026-12-10":"RGO","2026-12-17":"O","2026-12-24":"RGO","2026-12-31":"O","2027-01-07":"RGO","2027-01-14":"OY","2027-01-21":"RGO","2027-01-28":"O","2027-02-04":"RGO","2027-02-11":"O","2027-02-18":"RGO","2027-02-25":"O","2027-03-04":"RGO","2027-03-11":"O","2027-03-18":"RGO","2027-03-25":"O"},
+  "3B": {"2026-04-02":"O","2026-04-09":"RGO","2026-04-16":"O","2026-04-23":"RGO","2026-04-30":"OY","2026-05-07":"RGO","2026-05-14":"OY","2026-05-21":"RGO","2026-05-28":"OY","2026-06-04":"RGO","2026-06-11":"OY","2026-06-18":"RGO","2026-06-25":"O","2026-07-03":"RGO","2026-07-09":"O","2026-07-16":"RGO","2026-07-23":"OY","2026-07-30":"RGO","2026-08-06":"O","2026-08-13":"RGO","2026-08-20":"OY","2026-08-27":"RGO","2026-09-03":"O","2026-09-10":"RGO","2026-09-17":"OY","2026-09-24":"RGO","2026-10-01":"O","2026-10-08":"RGO","2026-10-15":"OY","2026-10-22":"RGO","2026-10-29":"OY","2026-11-05":"RGO","2026-11-12":"OY","2026-11-19":"RGO","2026-11-26":"OY","2026-12-03":"RGO","2026-12-10":"OY","2026-12-17":"RGO","2026-12-24":"O","2026-12-31":"RGO","2027-01-07":"O","2027-01-14":"RGOY","2027-01-21":"O","2027-01-28":"RGO","2027-02-04":"O","2027-02-11":"RGO","2027-02-18":"O","2027-02-25":"RGO","2027-03-04":"O","2027-03-11":"RGO","2027-03-18":"O","2027-03-25":"RGO"},
+  "4A": {"2026-04-04":"RGO","2026-04-10":"O","2026-04-17":"RGO","2026-04-24":"OY","2026-05-01":"RGO","2026-05-08":"OY","2026-05-15":"RGO","2026-05-22":"OY","2026-05-29":"RGO","2026-06-05":"OY","2026-06-12":"RGO","2026-06-19":"O","2026-06-26":"RGO","2026-07-04":"O","2026-07-10":"RGO","2026-07-17":"OY","2026-07-24":"RGO","2026-07-31":"O","2026-08-07":"RGO","2026-08-14":"OY","2026-08-21":"RGO","2026-08-28":"O","2026-09-04":"RGO","2026-09-11":"OY","2026-09-18":"RGO","2026-09-25":"O","2026-10-02":"RGO","2026-10-09":"OY","2026-10-16":"RGO","2026-10-23":"OY","2026-10-30":"RGO","2026-11-06":"OY","2026-11-13":"RGO","2026-11-20":"OY","2026-11-27":"RGO","2026-12-04":"OY","2026-12-11":"RGO","2026-12-18":"O","2026-12-26":"RGO","2027-01-02":"O","2027-01-08":"RGO","2027-01-15":"OY","2027-01-22":"RGO","2027-01-29":"O","2027-02-05":"RGO","2027-02-12":"O","2027-02-19":"RGO","2027-02-26":"O","2027-03-05":"RGO","2027-03-12":"O","2027-03-19":"RGO","2027-03-26":"O"},
+  "4B": {"2026-04-04":"O","2026-04-10":"RGO","2026-04-17":"O","2026-04-24":"RGO","2026-05-01":"OY","2026-05-08":"RGO","2026-05-15":"OY","2026-05-22":"RGO","2026-05-29":"OY","2026-06-05":"RGO","2026-06-12":"OY","2026-06-19":"RGO","2026-06-26":"O","2026-07-04":"RGO","2026-07-10":"O","2026-07-17":"RGO","2026-07-24":"OY","2026-07-31":"RGO","2026-08-07":"O","2026-08-14":"RGO","2026-08-21":"OY","2026-08-28":"RGO","2026-09-04":"O","2026-09-11":"RGO","2026-09-18":"OY","2026-09-25":"RGO","2026-10-02":"O","2026-10-09":"RGO","2026-10-16":"OY","2026-10-23":"RGO","2026-10-30":"OY","2026-11-06":"RGO","2026-11-13":"OY","2026-11-20":"RGO","2026-11-27":"OY","2026-12-04":"RGO","2026-12-11":"OY","2026-12-18":"RGO","2026-12-26":"O","2027-01-02":"RGO","2027-01-08":"O","2027-01-15":"RGOY","2027-01-22":"O","2027-01-29":"RGO","2027-02-05":"O","2027-02-12":"RGO","2027-02-19":"O","2027-02-26":"RGO","2027-03-05":"O","2027-03-12":"RGO","2027-03-19":"O","2027-03-26":"RGO"}
+};
+
+// Map single-letter feed codes to the app's WASTE_TYPES keys (legend order preserved).
+const COLLECTION_CODE_MAP = { R: 'recycling', G: 'garbage', O: 'greenBin', Y: 'yardWaste' };
+
+// Build a local YYYY-MM-DD key (avoids UTC off-by-one from toISOString()).
+function toDateKey(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+// ------------------------------------------------------------------
+// Live schedule sync with the official City of Windsor open-data API.
+// The embedded ZONE_COLLECTION_DATA above is the built-in/offline fallback;
+// a successful sync overwrites it (in memory + localStorage) so the app can
+// pick up next year's calendar without a code change.
+// ------------------------------------------------------------------
+const WASTE_API = {
+    base: 'https://opendata.citywindsor.ca/api/events/wasteCollection',
+    zones: ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B'],
+    categoryToCode: { 'Recycle': 'R', 'Garbage': 'G', 'Organics': 'O', 'Yard Waste': 'Y' },
+    codeOrder: ['R', 'G', 'O', 'Y'] // legend order preserved in stored strings
+};
+const SCHEDULE_STORAGE_KEY = 'windsor_schedule_data_v1';
+const SCHEDULE_UPDATED_KEY = 'windsor_schedule_updated_v1';
+// Always re-fetch from the start of the built-in calendar so browsing past
+// months keeps working, and extend well past today to catch future calendars.
+const SCHEDULE_FETCH_START = SCHEDULE_RANGE.start;
+
+// Replace the active dataset in place (ZONE_COLLECTION_DATA is const, so mutate it).
+function applyScheduleData(data, range) {
+    Object.keys(ZONE_COLLECTION_DATA).forEach(z => delete ZONE_COLLECTION_DATA[z]);
+    Object.keys(data).forEach(z => { ZONE_COLLECTION_DATA[z] = data[z]; });
+    if (range && range.start) SCHEDULE_RANGE.start = range.start;
+    if (range && range.end) SCHEDULE_RANGE.end = range.end;
+}
+
+// On startup: adopt a previously synced schedule from localStorage, if present and valid.
+function loadStoredSchedule() {
+    try {
+        const raw = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+        if (!raw) return false;
+        const stored = JSON.parse(raw);
+        if (!stored || !stored.data || typeof stored.data !== 'object') return false;
+        // Sanity check: must contain the expected zones with some entries.
+        const zones = Object.keys(stored.data);
+        const totalDays = zones.reduce((n, z) => n + Object.keys(stored.data[z] || {}).length, 0);
+        if (zones.length < WASTE_API.zones.length || totalDays < 100) return false;
+        applyScheduleData(stored.data, stored.range);
+        return true;
+    } catch (e) {
+        console.warn('Stored schedule could not be loaded:', e);
+        return false;
+    }
+}
+
+async function fetchZoneSchedule(zone, start, end) {
+    const url = `${WASTE_API.base}?location=${encodeURIComponent(zone)}` +
+        `&start=${start}&end=${end}`;
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status} for zone ${zone}`);
+    const json = await res.json();
+    const items = (json && json.items) || [];
+    const byDate = {};
+    items.forEach(it => {
+        const code = WASTE_API.categoryToCode[it.category];
+        if (!code) return;
+        const key = (it.collectionDate || '').slice(0, 10);
+        if (!key) return;
+        (byDate[key] = byDate[key] || new Set()).add(code);
+    });
+    const map = {};
+    Object.keys(byDate).sort().forEach(key => {
+        map[key] = WASTE_API.codeOrder.filter(c => byDate[key].has(c)).join('');
+    });
+    return map;
+}
+
+// Fetch every zone, validate, then persist + apply. Returns a result summary.
+async function updateScheduleFromApi() {
+    const start = SCHEDULE_FETCH_START;
+    const end = toDateKey(new Date(Date.now() + 540 * 24 * 3600 * 1000)); // ~18 months ahead
+    const maps = await Promise.all(
+        WASTE_API.zones.map(z => fetchZoneSchedule(z, start, end).then(m => ({ z, m })))
+    );
+
+    const data = {};
+    let total = 0, minDate = null, maxDate = null;
+    maps.forEach(({ z, m }) => {
+        // Keep the current (embedded/stored) data for any zone the API returns empty.
+        if (Object.keys(m).length === 0) {
+            data[z] = ZONE_COLLECTION_DATA[z] || {};
+        } else {
+            data[z] = m;
+        }
+        Object.keys(data[z]).forEach(k => {
+            total++;
+            if (!minDate || k < minDate) minDate = k;
+            if (!maxDate || k > maxDate) maxDate = k;
+        });
+    });
+
+    if (total < 100) throw new Error('پاسخ سرور ناقص بود (داده کافی دریافت نشد).');
+
+    const range = { start: minDate || start, end: maxDate || end };
+    const payload = { data, range, updatedAt: new Date().toISOString() };
+    try {
+        localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(payload));
+        localStorage.setItem(SCHEDULE_UPDATED_KEY, payload.updatedAt);
+    } catch (e) {
+        console.warn('Could not persist schedule to localStorage:', e);
+    }
+    applyScheduleData(data, range);
+    return { total, range, updatedAt: payload.updatedAt };
+}
+
+// Human-readable "last updated" label under the calendar toolbar.
+function renderScheduleUpdatedLabel() {
+    const el = document.getElementById('schedule-updated-label');
+    if (!el) return;
+    const iso = localStorage.getItem(SCHEDULE_UPDATED_KEY);
+    if (!iso) {
+        el.innerText = 'منبع: برنامه رسمی داخلی (۲۰۲۶-۲۰۲۷)';
+        return;
+    }
+    const d = new Date(iso);
+    const jd = getJalaliDateParts(d);
+    const time = d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    el.innerText = `آخرین بروزرسانی از سرور شهرداری: ${jd.day} ${jd.month} ${jd.year} - ${time}`;
+}
+
+async function handleUpdateScheduleClick() {
+    const btn = document.getElementById('update-schedule-btn');
+    const original = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال بروزرسانی...';
+    }
+    showToast('در حال دریافت آخرین برنامه از سرور شهرداری ویندزور...');
+    try {
+        const result = await updateScheduleFromApi();
+        updateAppView();
+        renderScheduleUpdatedLabel();
+        showToast(`برنامه با موفقیت بروزرسانی شد (${toPersianDigits(result.total)} روز جمع‌آوری دریافت شد).`);
+    } catch (e) {
+        console.error('Schedule update failed:', e);
+        showToast('بروزرسانی ناموفق بود. برنامه داخلی حفظ شد. اتصال اینترنت را بررسی کنید.');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    }
+}
 
 // ==========================================
 // 3. INITIALIZATION & EVENT LISTENERS
@@ -196,10 +367,12 @@ const BASE_REFERENCE_DATE = new Date(2026, 7, 6);
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    loadStoredSchedule();
     initServiceWorker();
     initPwaInstall();
     initEventListeners();
     updateAppView();
+    renderScheduleUpdatedLabel();
     renderWizardResults();
 });
 
@@ -343,6 +516,9 @@ function initEventListeners() {
         closeModal();
     });
 
+    const updateBtn = document.getElementById('update-schedule-btn');
+    if (updateBtn) updateBtn.addEventListener('click', handleUpdateScheduleClick);
+
     document.getElementById('download-ics-btn').addEventListener('click', generateICSFile);
     document.getElementById('print-calendar-btn').addEventListener('click', () => {
         window.print();
@@ -381,44 +557,81 @@ function initEventListeners() {
 // ==========================================
 
 function getCollectionForDate(date, zoneId) {
-    const zone = ZONE_SCHEDULES[zoneId];
-    if (!zone) return [];
+    const zoneData = ZONE_COLLECTION_DATA[zoneId];
+    if (!zoneData) return [];
 
-    const dayOfWeek = date.getDay();
-    
-    if (dayOfWeek !== zone.collectionDay) {
-        return [];
-    }
+    // Authoritative lookup: exact per-day categories from the City schedule.
+    // This correctly reflects each zone's collection weekday, bi-weekly parity,
+    // seasonal yard-waste dates and any statutory-holiday deferrals.
+    const codes = zoneData[toDateKey(date)];
+    if (!codes) return [];
 
-    const events = [];
-    
-    // 1. Green Bin Collection (پسماند ارگانیک) -> EVERY WEEK (هفتگی)
-    events.push(WASTE_TYPES.greenBin);
+    // Preserve the legend order (Recycle, Garbage, Green Bin, Yard Waste) as stored.
+    return codes.split('').map(code => WASTE_TYPES[COLLECTION_CODE_MAP[code]]).filter(Boolean);
+}
 
-    // Calculate week difference from Base Reference Date (Aug 6, 2026)
-    const diffTime = date.getTime() - BASE_REFERENCE_DATE.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
-    const diffWeeks = Math.floor(diffDays / 7);
+// ==========================================
+// 4b. OFFICIAL HOLIDAY ENGINE (Ontario / City of Windsor)
+// ==========================================
+// Statutory holidays observed by the City of Windsor, computed from their legislated
+// rules so they resolve correctly for any year (validated against the official
+// 2026-2027 waste calendar). "depotClosed" marks Public Drop Off Depot closures.
 
-    // Official Windsor Bi-weekly Schedule Parity:
-    // Aug 6: Green Bin ONLY
-    // Aug 13: Green Bin + Garbage + Recycling
-    // Aug 20: Green Bin + Yard Waste
-    // Aug 27: Green Bin + Garbage + Recycling
-    const isFullCollectionWeek = Math.abs(diffWeeks) % 2 === 1;
+// Easter Sunday via the Anonymous Gregorian (Meeus/Jones/Butcher) algorithm.
+function easterSunday(year) {
+    const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+    const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const month = Math.floor((h + l - 7 * m + 114) / 31); // 3 = March, 4 = April
+    const day = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(year, month - 1, day);
+}
 
-    if (isFullCollectionWeek) {
-        events.push(WASTE_TYPES.garbage);
-        events.push(WASTE_TYPES.recycling);
-    }
+// Nth (1-based) occurrence of a weekday (0=Sun..6=Sat) in a given month (0-based).
+function nthWeekday(year, month, weekday, n) {
+    const first = new Date(year, month, 1);
+    const offset = (weekday - first.getDay() + 7) % 7;
+    return new Date(year, month, 1 + offset + (n - 1) * 7);
+}
 
-    // 3. Yard Waste Collection (کیسه کاغذی قهوه‌ای ضایعات باغچه) -> Every 3rd week of the month (Days 15-21)
-    const dayOfMonth = date.getDate();
-    if (dayOfMonth >= 15 && dayOfMonth <= 21) {
-        events.push(WASTE_TYPES.yardWaste);
-    }
+function addDays(date, n) {
+    const d = new Date(date);
+    d.setDate(d.getDate() + n);
+    return d;
+}
 
-    return events;
+// Definitions produce a Date for a given year. fa = Persian name, en = English label.
+const HOLIDAY_DEFS = [
+    { fa: 'روز سال نو', en: "New Year's Day", depotClosed: true, date: y => new Date(y, 0, 1) },
+    { fa: 'روز خانواده', en: 'Family Day', depotClosed: true, date: y => nthWeekday(y, 1, 1, 3) }, // 3rd Mon of Feb
+    { fa: 'جمعه نیک', en: 'Good Friday', depotClosed: true, date: y => addDays(easterSunday(y), -2) },
+    { fa: 'دوشنبه عید پاک', en: 'Easter Monday', depotClosed: true, date: y => addDays(easterSunday(y), 1) },
+    { fa: 'روز ویکتوریا', en: 'Victoria Day', depotClosed: true, date: y => { let d = new Date(y, 4, 24); while (d.getDay() !== 1) d.setDate(d.getDate() - 1); return d; } },
+    { fa: 'روز کانادا', en: 'Canada Day', depotClosed: true, date: y => new Date(y, 6, 1) },
+    { fa: 'تعطیلات مدنی (سیویک)', en: 'Civic Holiday', depotClosed: true, date: y => nthWeekday(y, 7, 1, 1) }, // 1st Mon of Aug
+    { fa: 'روز کارگر', en: 'Labour Day', depotClosed: true, date: y => nthWeekday(y, 8, 1, 1) }, // 1st Mon of Sep
+    { fa: 'روز حقیقت و آشتی', en: 'Truth & Reconciliation', depotClosed: false, date: y => new Date(y, 8, 30) },
+    { fa: 'روز شکرگزاری', en: 'Thanksgiving Day', depotClosed: true, date: y => nthWeekday(y, 9, 1, 2) }, // 2nd Mon of Oct
+    { fa: 'روز یادبود', en: 'Remembrance Day', depotClosed: false, date: y => new Date(y, 10, 11) },
+    { fa: 'روز کریسمس', en: 'Christmas Day', depotClosed: true, date: y => new Date(y, 11, 25) },
+    { fa: 'روز باکسینگ‌دی', en: 'Boxing Day', depotClosed: true, date: y => new Date(y, 11, 26) }
+];
+
+// Lazily build & cache a { 'YYYY-MM-DD': {fa, en, depotClosed} } map per year.
+const HOLIDAY_CACHE = {};
+function getHolidayMapForYear(year) {
+    if (HOLIDAY_CACHE[year]) return HOLIDAY_CACHE[year];
+    const map = {};
+    HOLIDAY_DEFS.forEach(def => {
+        map[toDateKey(def.date(year))] = { fa: def.fa, en: def.en, depotClosed: def.depotClosed };
+    });
+    HOLIDAY_CACHE[year] = map;
+    return map;
+}
+
+function getHolidayForDate(date) {
+    return getHolidayMapForYear(date.getFullYear())[toDateKey(date)] || null;
 }
 
 // ==========================================
@@ -501,27 +714,33 @@ function renderCalendar() {
         const currentDate = new Date(year, month, d);
         const jDate = getJalaliDateParts(currentDate);
         const events = getCollectionForDate(currentDate, currentState.currentZone);
+        const holiday = getHolidayForDate(currentDate);
         const isToday = currentDate.toDateString() === today.toDateString();
 
         const cell = document.createElement('div');
-        cell.className = `day-cell ${isToday ? 'today' : ''}`;
-        
+        cell.className = `day-cell ${isToday ? 'today' : ''} ${holiday ? 'is-holiday' : ''}`;
+
         let badgesHtml = '';
         events.forEach(ev => {
             badgesHtml += `<div class="mini-badge ${ev.colorClass}">${getPamphletIconSvg(ev.id)} <span>${ev.name}</span></div>`;
         });
+
+        const holidayHtml = holiday
+            ? `<div class="holiday-label" title="${holiday.en}${holiday.depotClosed ? ' — Depot closed' : ''}"><i class="fa-solid fa-star"></i> <span>${holiday.fa}</span></div>`
+            : '';
 
         cell.innerHTML = `
             <div class="day-cell-header">
                 <span class="day-shamsi">${toPersianDigits(d)}</span>
                 <span class="day-gregorian">${jDate.day} ${jDate.month}</span>
             </div>
+            ${holidayHtml}
             <div class="day-badges">
                 ${badgesHtml}
             </div>
         `;
 
-        cell.addEventListener('click', () => openDayModal(currentDate, jDate, events));
+        cell.addEventListener('click', () => openDayModal(currentDate, jDate, events, holiday));
         daysGrid.appendChild(cell);
     }
 }
@@ -612,14 +831,31 @@ function renderWizardResults() {
 // 7. MODALS, NOTIFICATIONS & UTILITIES
 // ==========================================
 
-function openDayModal(gDate, jDate, events) {
+function openDayModal(gDate, jDate, events, holiday) {
     const modal = document.getElementById('day-modal');
     document.getElementById('modal-date-shamsi').innerText = `${WEEKDAYS_FA[gDate.getDay()]} ${jDate.day} ${jDate.month} ${jDate.year}`;
     document.getElementById('modal-date-gregorian').innerText = gDate.toDateString();
 
+    if (holiday === undefined) holiday = getHolidayForDate(gDate);
+
     const contentBox = document.getElementById('modal-body-content');
+    let holidayHtml = '';
+    if (holiday) {
+        const depotNote = holiday.depotClosed
+            ? 'مرکز تحویل پسماند (Public Drop Off Depot) در این روز <strong>تعطیل</strong> است.'
+            : 'مرکز تحویل پسماند (Public Drop Off Depot) در این روز باز است.';
+        holidayHtml = `
+            <div class="rule-item modal-holiday" style="background: var(--bg-primary); padding: 10px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <i class="fa-solid fa-star" style="color: var(--accent-gold, #d97706); font-size: 1.1rem;"></i>
+                <div>
+                    <strong style="color: var(--text-primary);">تعطیل رسمی: ${holiday.fa} (${holiday.en})</strong>
+                    <span style="font-size: 0.82rem; color: var(--text-secondary); display:block;">${depotNote} جمع‌آوری این هفته ممکن است یک روز به تعویق بیفتد.</span>
+                </div>
+            </div>`;
+    }
+
     if (events.length === 0) {
-        contentBox.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">در این تاریخ نوبت تخلیه و جمع‌آوری پسماند ثبت نشده است.</p>`;
+        contentBox.innerHTML = holidayHtml + `<p style="color: var(--text-muted); text-align: center; padding: 20px;">در این تاریخ نوبت تخلیه و جمع‌آوری پسماند ثبت نشده است.</p>`;
     } else {
         let html = '<h4 style="font-size: 0.95rem; margin-bottom: 8px;">پسماندهای قابل جمع‌آوری در این روز:</h4><div style="display:flex; flex-direction:column; gap:10px;">';
         events.forEach(ev => {
@@ -634,7 +870,7 @@ function openDayModal(gDate, jDate, events) {
             `;
         });
         html += '</div>';
-        contentBox.innerHTML = html;
+        contentBox.innerHTML = holidayHtml + html;
     }
 
     modal.classList.remove('hidden');

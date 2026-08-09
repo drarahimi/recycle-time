@@ -1,10 +1,16 @@
-const CACHE_NAME = 'windsor-recycle-v10';
+const CACHE_NAME = 'windsor-recycle-v14';
 const ASSETS_TO_CACHE = [
   './',
-  './index.html?v=10',
-  './style.css?v=10',
-  './app.js?v=10',
+  './index.html?v=14',
+  './style.css?v=14',
+  './app.js?v=14',
   './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-maskable-192.png',
+  './icon-maskable-512.png',
+  './apple-touch-icon.png',
+  './favicon-32.png',
   'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
