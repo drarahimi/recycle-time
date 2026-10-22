@@ -1,4 +1,4 @@
-const CACHE_NAME = 'windsor-recycle-v15';
+const CACHE_NAME = 'windsor-recycle-v16';
 const ASSETS_TO_CACHE = [
   './',
   './index.html?v=14',
@@ -11,8 +11,11 @@ const ASSETS_TO_CACHE = [
   './icon-maskable-512.png',
   './apple-touch-icon.png',
   './favicon-32.png',
-  'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+  './fonts/vazirmatn.css',
+  './fonts/Vazirmatn-Variable.woff2',
+  './fonts/fontawesome.min.css',
+  './fonts/fa/fa-solid-900.woff2',
+  './fonts/fa/fa-regular-400.woff2'
 ];
 
 // Install Event - Force Immediately Active
