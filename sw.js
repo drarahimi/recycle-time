@@ -1,5 +1,5 @@
 // Single source of truth for cache versioning: bump on every release.
-const CACHE_VERSION = 18;
+const CACHE_VERSION = 19;
 const CACHE_NAME = `windsor-recycle-v${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
   './',

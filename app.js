@@ -880,6 +880,10 @@ function closeModal() {
     document.getElementById('day-modal').classList.add('hidden');
 }
 
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+
 function showToast(message) {
     const toast = document.getElementById('toast-notification');
     document.getElementById('toast-message').innerText = message;

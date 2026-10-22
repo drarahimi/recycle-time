@@ -38,15 +38,15 @@
     <!-- PWA Install Prompt Banner (Mobile Only) -->
     <div id="pwa-install-banner" class="pwa-banner hidden">
         <div class="pwa-banner-content">
-            <div class="pwa-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="pwa-icon"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></div>
             <div class="pwa-text">
                 <strong>نصب اپلیکیشن روی گوشی (PWA)</strong>
                 <span>برای دریافت یادآورهای خودکار و دسترسی بدون اینترنت نصب کنید.</span>
             </div>
         </div>
         <div class="pwa-actions">
-            <button id="pwa-install-btn" class="action-btn primary"><i class="fa-solid fa-download"></i> نصب برنامه</button>
-            <button id="pwa-close-btn" class="icon-btn-sm"><i class="fa-solid fa-xmark"></i></button>
+            <button id="pwa-install-btn" class="action-btn primary"><i class="fa-solid fa-download" aria-hidden="true"></i> نصب برنامه</button>
+            <button id="pwa-close-btn" class="icon-btn-sm" aria-label="بستن"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
         </div>
     </div>
 
@@ -55,7 +55,7 @@
         <header class="main-header">
             <div class="brand-container">
                 <div class="logo-badge">
-                    <i class="fa-solid fa-recycle"></i>
+                    <i class="fa-solid fa-recycle" aria-hidden="true"></i>
                 </div>
                 <div class="brand-text">
                     <h1>تقویم پسماند ویندزور</h1>
@@ -67,13 +67,13 @@
                 <!-- Postal Code Search Input & Zone Picker -->
                 <div class="control-group postal-search-group">
                     <div class="postal-input-box">
-                        <i class="fa-solid fa-magnifying-glass-location"></i>
-                        <input type="text" id="postal-input" placeholder="کد پستی (مثلاً N8W, N9A, N8P...)" maxlength="7" autocomplete="off">
+                        <i class="fa-solid fa-magnifying-glass-location" aria-hidden="true"></i>
+                        <input type="text" id="postal-input" aria-label="جستجو با کد پستی" placeholder="کد پستی (مثلاً N8W, N9A, N8P...)" maxlength="7" autocomplete="off">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <select id="zone-select" class="zone-dropdown">
+                    <select id="zone-select" class="zone-dropdown" aria-label="انتخاب منطقه جمع‌آوری">
                         <option value="1A">منطقه 1A (سه‌شنبه - غرب ویندزور / N9B, N9C, N9J)</option>
                         <option value="1B">منطقه 1B (سه‌شنبه - جنوب غرب / N9E)</option>
                         <option value="2A">منطقه 2A (چهارشنبه - مرکز شهر / N9A, N8X North)</option>
@@ -86,8 +86,8 @@
                 </div>
 
                 <!-- Dark/Light Theme Switcher -->
-                <button id="theme-toggle" class="icon-btn" title="تغییر پوسته (تاریک / روشن)">
-                    <i class="fa-solid fa-sun"></i>
+                <button id="theme-toggle" class="icon-btn" aria-label="تغییر پوسته (تاریک / روشن)" title="تغییر پوسته (تاریک / روشن)">
+                    <i class="fa-solid fa-sun" aria-hidden="true"></i>
                 </button>
             </div>
         </header>
@@ -102,7 +102,7 @@
                         <span id="current-today-date">تاریخ امروز</span>
                     </div>
                     <button class="reminder-btn" id="notify-btn">
-                        <i class="fa-regular fa-bell"></i> یادآور گوشی
+                        <i class="fa-regular fa-bell" aria-hidden="true"></i> یادآور گوشی
                     </button>
                 </div>
 
@@ -117,14 +117,14 @@
 
                     <div class="pickup-rules-quick">
                         <div class="rule-item">
-                            <i class="fa-solid fa-clock"></i>
+                            <i class="fa-solid fa-clock" aria-hidden="true"></i>
                             <div>
                                 <strong>۴ نوع جمع‌آوری رسمی ویندزور:</strong>
                                 <span>بازیافت (هر ۲ هفته) | زباله (هر ۲ هفته) | ارگانیک (هفتگی) | باغچه (هر ۲ هفته، فصلی)</span>
                             </div>
                         </div>
                         <div class="rule-item">
-                            <i class="fa-solid fa-box-tissue"></i>
+                            <i class="fa-solid fa-box-tissue" aria-hidden="true"></i>
                             <div>
                                 <strong>ساعت قرار دادن کنار خیابان:</strong>
                                 <span>حداکثر تا ساعت ۶:۰۰ صبح روز جمع‌آوری</span>
@@ -138,28 +138,28 @@
             <div class="nav-tabs-container">
                 <div class="nav-tabs" role="tablist">
                     <button class="tab-btn active" data-tab="calendar-tab">
-                        <i class="fa-regular fa-calendar-days"></i> تقویم ماهانه
+                        <i class="fa-regular fa-calendar-days" aria-hidden="true"></i> تقویم ماهانه
                     </button>
                     <button class="tab-btn" data-tab="list-tab">
-                        <i class="fa-solid fa-list-check"></i> نوبت‌های پیش‌رو
+                        <i class="fa-solid fa-list-check" aria-hidden="true"></i> نوبت‌های پیش‌رو
                     </button>
                     <button class="tab-btn" data-tab="wizard-tab">
-                        <i class="fa-solid fa-magnifying-glass-chart"></i> راهنمای تفکیک
+                        <i class="fa-solid fa-magnifying-glass-chart" aria-hidden="true"></i> راهنمای تفکیک
                     </button>
                     <button class="tab-btn" data-tab="rules-tab">
-                        <i class="fa-solid fa-circle-info"></i> قوانین و کدپستی
+                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i> قوانین و کدپستی
                     </button>
                 </div>
                 
                 <div class="tab-actions">
                     <button id="update-schedule-btn" class="action-btn secondary" title="دریافت آخرین برنامه رسمی از سرور شهرداری ویندزور">
-                        <i class="fa-solid fa-cloud-arrow-down"></i> بروزرسانی برنامه
+                        <i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i> بروزرسانی برنامه
                     </button>
                     <button id="download-ics-btn" class="action-btn secondary" title="دانلود تقویم برای تقویم گوگل و آیفون">
-                        <i class="fa-solid fa-download"></i> خروجی (ICS)
+                        <i class="fa-solid fa-download" aria-hidden="true"></i> خروجی (ICS)
                     </button>
                     <button id="print-calendar-btn" class="action-btn secondary" title="چاپ تقویم">
-                        <i class="fa-solid fa-print"></i> چاپ
+                        <i class="fa-solid fa-print" aria-hidden="true"></i> چاپ
                     </button>
                     <span id="schedule-updated-label" class="schedule-updated-label" title="زمان آخرین بروزرسانی برنامه از سرور شهرداری"></span>
                 </div>
@@ -171,12 +171,12 @@
                     <!-- Calendar Toolbar -->
                     <div class="calendar-toolbar">
                         <div class="month-nav">
-                            <button id="prev-month-btn" class="nav-arrow-btn">
-                                <i class="fa-solid fa-chevron-right"></i>
+                            <button id="prev-month-btn" class="nav-arrow-btn" aria-label="ماه قبل">
+                                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
                             </button>
                             <h2 id="calendar-month-title">عنوان ماه</h2>
-                            <button id="next-month-btn" class="nav-arrow-btn">
-                                <i class="fa-solid fa-chevron-left"></i>
+                            <button id="next-month-btn" class="nav-arrow-btn" aria-label="ماه بعد">
+                                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                             </button>
                             <button id="today-btn" class="today-chip">امروز</button>
                         </div>
@@ -231,7 +231,7 @@
             <div id="list-tab" class="tab-content">
                 <div class="upcoming-list-container">
                     <div class="list-header">
-                        <h3><i class="fa-solid fa-clock-rotate-left"></i> برنامه جمع‌آوری ۳۰ روز آینده</h3>
+                        <h3><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> برنامه جمع‌آوری ۳۰ روز آینده</h3>
                         <p>لیست مرتب‌شده نوبت‌های تخلیه برای منطقه انتخابی شما بر اساس ۴ نوع جمع‌آوری رسمی ویندزور</p>
                     </div>
                     <div id="upcoming-list-items" class="upcoming-cards-grid">
@@ -245,14 +245,14 @@
                 <div class="wizard-container">
                     <div class="wizard-search-box">
                         <div class="search-title">
-                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> زباله‌یاب و راهنمای تفکیک</h3>
+                            <h3><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> زباله‌یاب و راهنمای تفکیک</h3>
                             <p>اسم وسیله یا زباله‌ای که می‌خواهید دور بیندازید را بنویسید تا بگوییم سطل مربوط به آن کدام است:</p>
                         </div>
                         
                         <div class="search-input-wrapper">
-                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                            <input type="text" id="wizard-search-input" placeholder="مثلاً: قوطی کنسرو، بطری شیر، یخچالی، برگه کاغذ، روغن خوراکی..." autocomplete="off">
-                            <button id="clear-search-btn" class="clear-search hidden"><i class="fa-solid fa-xmark"></i></button>
+                            <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                            <input type="text" id="wizard-search-input" aria-label="جستجوی ماده برای تفکیک پسماند" placeholder="مثلاً: قوطی کنسرو، بطری شیر، یخچالی، برگه کاغذ، روغن خوراکی..." autocomplete="off">
+                            <button id="clear-search-btn" class="clear-search hidden" aria-label="پاک کردن جستجو"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
                         </div>
 
                         <!-- Filter Chips -->
@@ -383,12 +383,12 @@
                     <!-- Windsor Contact Banner -->
                     <div class="windsor-contact-box">
                         <div class="contact-info">
-                            <h3><i class="fa-solid fa-phone"></i> مرکز ارتباطات شهر ویندزور (City of Windsor 311)</h3>
+                            <h3><i class="fa-solid fa-phone" aria-hidden="true"></i> مرکز ارتباطات شهر ویندزور (City of Windsor 311)</h3>
                             <p>برای گزارش عدم جمع‌آوری، درخواست سطل جدید یا رزرو جمع‌آوری وسایل حجیم:</p>
                             <div class="phone-tags">
-                                <span class="phone-tag"><i class="fa-solid fa-square-phone"></i> شماره داخلی: 311</span>
-                                <span class="phone-tag"><i class="fa-solid fa-phone-flip"></i> شماره مستقیم: 3121-974-519-1+</span>
-                                <span class="phone-tag"><i class="fa-solid fa-globe"></i> وبسایت رسمی: citywindsor.ca</span>
+                                <span class="phone-tag"><i class="fa-solid fa-square-phone" aria-hidden="true"></i> شماره داخلی: 311</span>
+                                <span class="phone-tag"><i class="fa-solid fa-phone-flip" aria-hidden="true"></i> شماره مستقیم: 3121-974-519-1+</span>
+                                <span class="phone-tag"><i class="fa-solid fa-globe" aria-hidden="true"></i> وبسایت رسمی: citywindsor.ca</span>
                             </div>
                         </div>
                     </div>
@@ -406,27 +406,27 @@
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
         <button class="nav-item active" data-tab="calendar-tab">
-            <i class="fa-regular fa-calendar-days"></i>
+            <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
             <span>تقویم</span>
         </button>
         <button class="nav-item" data-tab="list-tab">
-            <i class="fa-solid fa-list-check"></i>
+            <i class="fa-solid fa-list-check" aria-hidden="true"></i>
             <span>نوبت‌ها</span>
         </button>
         <button class="nav-item" data-tab="wizard-tab">
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
             <span>زباله‌یاب</span>
         </button>
         <button class="nav-item" data-tab="rules-tab">
-            <i class="fa-solid fa-circle-info"></i>
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
             <span>قوانین</span>
         </button>
     </nav>
 
     <!-- Day Details Modal -->
-    <div id="day-modal" class="modal-overlay hidden">
+    <div id="day-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-date-gregorian">
         <div class="modal-card">
-            <button id="close-modal-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button id="close-modal-btn" class="close-btn" aria-label="بستن"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             <div class="modal-header">
                 <span class="modal-badge" id="modal-date-shamsi">تاریخ انتخاب شده</span>
                 <h3 id="modal-date-gregorian">Selected Date</h3>
@@ -436,7 +436,7 @@
             </div>
             <div class="modal-footer">
                 <button id="modal-reminder-btn" class="action-btn primary">
-                    <i class="fa-regular fa-bell"></i> تنظیم یادآور این روز
+                    <i class="fa-regular fa-bell" aria-hidden="true"></i> تنظیم یادآور این روز
                 </button>
             </div>
         </div>
@@ -444,7 +444,7 @@
 
     <!-- Notification Toast -->
     <div id="toast-notification" class="toast hidden">
-        <i class="fa-solid fa-circle-check toast-icon"></i>
+        <i class="fa-solid fa-circle-check toast-icon" aria-hidden="true"></i>
         <span id="toast-message">پیام سیستم</span>
     </div>
 
