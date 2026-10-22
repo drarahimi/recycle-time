@@ -1,4 +1,4 @@
-const CACHE_NAME = 'windsor-recycle-v14';
+const CACHE_NAME = 'windsor-recycle-v15';
 const ASSETS_TO_CACHE = [
   './',
   './index.html?v=14',
