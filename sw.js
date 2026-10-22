@@ -1,5 +1,5 @@
 // Single source of truth for cache versioning: bump on every release.
-const CACHE_VERSION = 17;
+const CACHE_VERSION = 18;
 const CACHE_NAME = `windsor-recycle-v${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
   './',
@@ -46,19 +46,29 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event - Network First Strategy for Fresh Development Updates
+// Fetch Event - Stale-While-Revalidate: serve from cache instantly, refresh in the background
 self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) return;
+
   event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => caches.match(event.request))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cached = await cache.match(request, { ignoreSearch: true });
+      const refresh = fetch(request, { cache: 'no-cache' })
+        .then((response) => {
+          if (response && response.status === 200) cache.put(request, response.clone());
+          return response;
+        })
+        .catch(() => null);
+
+      if (cached) {
+        event.waitUntil(refresh);
+        return cached;
+      }
+      const fresh = await refresh;
+      if (fresh) return fresh;
+      if (request.mode === 'navigate') return cache.match('./index.html');
+      return Response.error();
+    })
   );
 });
